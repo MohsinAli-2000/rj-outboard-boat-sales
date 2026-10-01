@@ -1,0 +1,6429 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Inter:wght@400;500&family=Sora:wght@600;700&display=swap');
+
+/* =================================================================
+   RJ's Outboard Sales & Service — style.css
+
+   BASE CSS FIRST, ALL RESPONSIVE LAST.
+   1. tokens   2. common   3. header / nav   4. mobile menu
+   5. footer   6. home page   7. sell / trade page   8. schedule demo page   9. contact page   10. service center page   11. repower page   12. financing page   13. about page   14. meet team page   15. parts page   16. bennington page   17. testimonials page   18. faqs page   19. blog page   20. blog post page   LAST. RESPONSIVE
+
+   Every @media rule in the whole site lives in the RESPONSIVE block
+   at the bottom — one block per breakpoint, never opened twice.
+   Design frame: 1920 wide. Content column 1440 (240px gutters).
+   ================================================================= */
+
+/* ============================== */
+/* 1. tokens start here           */
+/* ============================== */
+:root {
+    /* palette — names are the Figma color styles */
+    --color-firefly: #0b1526;
+    --color-downriver: #08203f;
+    --downriver-16: rgba(8, 32, 63, 0.16);
+    --color-big-stone: #0f1c31;
+    --color-venice-blue: #0a4a94;
+    --color-milano-red: #c91800;
+    --color-signal-red: #ff2b14;
+    --color-signal-red-hover: #e0200c;
+    --color-catskill-white: #f4f6fa;
+    --color-white: #ffffff;
+    --color-blue-bayoux: #4c5a72;
+    --color-slate-gray: #6b7891;
+    --color-mystic: #e2e6ee;
+    --color-mystic-light: #dfe4ec;
+    --color-card-dark: #16233b;
+    --color-card-stripe: #1c2b47;
+    --color-boulder: #757575;
+    --color-gray-border: #e5e5e5;
+    --color-placeholder-gray: #c4c4c4;
+    --color-light-gray: #cccccc;
+    --color-black: #000000;
+    --color-athens-gray: #f4f6f8;
+    --color-gull-gray: #7a8b9c;
+    --color-ebony-clay: #1a2b3c;
+    --color-fiord-gray: #3e5266;
+
+    /* recurring white alphas on dark surfaces */
+    --white-04: rgba(255, 255, 255, 0.04);
+    --white-10: rgba(255, 255, 255, 0.1);
+    --white-12: rgba(255, 255, 255, 0.12);
+    --white-20: rgba(255, 255, 255, 0.2);
+    --white-30: rgba(255, 255, 255, 0.3);
+    --white-40: rgba(255, 255, 255, 0.4);
+    --white-45: rgba(255, 255, 255, 0.45);
+    --white-50: rgba(255, 255, 255, 0.5);
+    --white-55: rgba(255, 255, 255, 0.55);
+    --white-65: rgba(255, 255, 255, 0.65);
+    --white-70: rgba(255, 255, 255, 0.7);
+    --white-75: rgba(255, 255, 255, 0.75);
+    --white-78: rgba(255, 255, 255, 0.78);
+    --white-80: rgba(255, 255, 255, 0.8);
+    --white-85: rgba(255, 255, 255, 0.85);
+
+    /* the bottom-weighted scrim shared by the Schedule Demo and Contact heroes */
+    --hero-scrim-interior: linear-gradient(-13.47deg, rgba(11, 21, 38, 0.6) 25%, rgba(11, 21, 38, 0.96) 75%);
+
+    --font-display: 'Sora', sans-serif;
+    --font-body: 'Archivo', sans-serif;
+    --font-label: 'Inter', sans-serif;
+
+    /* the fixed header is the top bar + the main nav bar; body padding
+       and scroll offsets both read the sum, so changing a bar's height
+       in RESPONSIVE keeps everything in step */
+    --topbar-height: 49px;
+    --navbar-height: 102.97px;
+    --header-height: calc(var(--topbar-height) + var(--navbar-height));
+}
+
+/* pages whose Figma frame has no top bar above the nav (Sell/Trade)   */
+/* add this class to <html>; it out-ranks the :root overrides in       */
+/* RESPONSIVE, so the header height collapses to the nav bar alone      */
+html.rj-no-topbar {
+    --topbar-height: 0px;
+}
+
+/* ============================== */
+/* 2. common css starts here      */
+/* ============================== */
+
+/* ---- reset / defaults ---- */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-padding-top: var(--header-height);
+}
+
+body {
+    margin: 0;
+    /* the header is position:fixed, so this padding is its stand-in */
+    padding-top: var(--header-height);
+    font-family: var(--font-body);
+    font-weight: 400;
+    color: var(--color-firefly);
+    background: var(--color-white);
+    -webkit-font-smoothing: antialiased;
+}
+
+body.is-menu-open {
+    overflow: hidden;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color .25s ease, background-color .25s ease, border-color .25s ease, opacity .25s ease;
+}
+
+a:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+p,
+ul,
+ol,
+dl,
+dd,
+address {
+    margin: 0;
+}
+
+ul,
+ol {
+    padding: 0;
+    list-style: none;
+}
+
+button {
+    padding: 0;
+    font-family: inherit;
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--color-signal-red);
+    outline-offset: 3px;
+}
+
+/* ---- icons & images always read as clickable ---- */
+/* Applies even with no link and no click handler. Add every new     */
+/* media-wrapper class here — never a one-off cursor: pointer.       */
+img,
+svg,
+i[class*="fa-"],
+.rj-boat-card__photo {
+    cursor: pointer;
+}
+
+/* ---- container ---- */
+/* 1440 content column + 24px gutters = 1488 max width. At the 1920   */
+/* Figma frame this reproduces the 240px side gutters; below 1488 the */
+/* gutter shrinks to 16px on phones.                                  */
+.rj-container {
+    width: 100%;
+    max-width: 1488px;
+    margin-inline: auto;
+    padding-inline: clamp(16px, 4vw, 24px);
+}
+
+/* ---- gutter overrides for the Bootstrap grid ---- */
+/* Figma gutters are 2 / 10 / 18 / 24 / 26px, not Bootstrap's 30px.   */
+/* Columns carry the vertical gap as margin-bottom so rows that wrap  */
+/* keep the same rhythm; the row pulls the last one back out.         */
+.rj-row-gap-2 {
+    margin-inline: -1px;
+    margin-bottom: -2px;
+}
+
+.rj-row-gap-2 > [class*="col-"] {
+    padding-inline: 1px;
+    margin-bottom: 2px;
+}
+
+.rj-row-gap-10 {
+    margin-inline: -5px;
+    margin-bottom: -10px;
+}
+
+.rj-row-gap-10 > [class*="col-"] {
+    padding-inline: 5px;
+    margin-bottom: 10px;
+}
+
+.rj-row-gap-16 {
+    margin-inline: -8px;
+    margin-bottom: -16px;
+}
+
+.rj-row-gap-16 > [class*="col-"] {
+    padding-inline: 8px;
+    margin-bottom: 16px;
+}
+
+.rj-row-gap-18 {
+    margin-inline: -9px;
+    margin-bottom: -18px;
+}
+
+.rj-row-gap-18 > [class*="col-"] {
+    padding-inline: 9px;
+    margin-bottom: 18px;
+}
+
+.rj-row-gap-24 {
+    margin-inline: -12px;
+    margin-bottom: -24px;
+}
+
+.rj-row-gap-24 > [class*="col-"] {
+    padding-inline: 12px;
+    margin-bottom: 24px;
+}
+
+.rj-row-gap-26 {
+    margin-inline: -13px;
+    margin-bottom: -26px;
+}
+
+.rj-row-gap-26 > [class*="col-"] {
+    padding-inline: 13px;
+    margin-bottom: 26px;
+}
+
+.rj-row-gap-40 {
+    margin-inline: -20px;
+    margin-bottom: -40px;
+}
+
+.rj-row-gap-40 > [class*="col-"] {
+    padding-inline: 20px;
+    margin-bottom: 40px;
+}
+
+.rj-row-gap-32 {
+    margin-inline: -16px;
+    margin-bottom: -32px;
+}
+
+.rj-row-gap-32 > [class*="col-"] {
+    padding-inline: 16px;
+    margin-bottom: 32px;
+}
+
+/* ---- typography ---- */
+/* Eyebrow: small tracked label above a heading. --bar adds the 34x3  */
+/* red rule that precedes it in most sections.                        */
+.rj-eyebrow {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: 11px;
+    letter-spacing: 2.8px;
+    text-transform: uppercase;
+    color: var(--color-milano-red);
+}
+
+.rj-eyebrow--bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.rj-eyebrow--bar::before {
+    content: "";
+    flex-shrink: 0;
+    width: 34px;
+    height: 3px;
+    background: var(--color-milano-red);
+}
+
+/* interior-page heroes close the rule-to-label gap to 12px */
+.rj-eyebrow--compact-bar {
+    gap: 12px;
+}
+
+/* the hero eyebrows on Service Center and Repower track at 2.6px */
+.rj-eyebrow--spaced {
+    letter-spacing: 2.6px;
+}
+
+/* white label text; the rule stays red */
+.rj-eyebrow--white {
+    color: var(--color-white);
+}
+
+/* the Parts eyebrows use the brighter Signal Red, rule included */
+.rj-eyebrow--signal {
+    color: var(--color-signal-red);
+}
+
+.rj-eyebrow--signal::before {
+    background: var(--color-signal-red);
+}
+
+/* the eyebrows without a rule track at 2.2px, not 2.8px */
+.rj-eyebrow--tight {
+    letter-spacing: 2.2px;
+}
+
+/* Heading sizes use the Figma 1920 value as the clamp maximum, so the  */
+/* page matches Figma at 1920 and scales down smoothly below it. Line   */
+/* height and tracking are ratios of the font size for the same reason. */
+.rj-heading-hero {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(38px, 5.625vw, 108px);
+    line-height: 0.92;
+    letter-spacing: -0.02778em;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+/* 88px interior heading: page heroes and the trust-metric numbers */
+.rj-heading-interior {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(40px, 4.583vw, 88px);
+    line-height: 0.9545;
+    letter-spacing: -0.03409em;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+.rj-heading-large {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(32px, 4vw, 64px);
+    line-height: 1;
+    letter-spacing: -0.03125em;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+.rj-heading {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(32px, 3.75vw, 60px);
+    line-height: 1;
+    letter-spacing: -0.03333em;
+    text-transform: uppercase;
+    color: var(--color-firefly);
+}
+
+.rj-heading-large--dark {
+    color: var(--color-firefly);
+}
+
+.rj-heading--light {
+    color: var(--color-white);
+}
+
+.rj-heading-medium {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(28px, 3.25vw, 52px);
+    line-height: 1;
+    letter-spacing: -0.03462em;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+.rj-heading-card {
+    margin: 0;
+    padding-top: 1px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(28px, 2.875vw, 46px);
+    line-height: 1;
+    letter-spacing: -0.03043em;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+/* 42px heading: Blog featured article and article subheads */
+.rj-heading-article {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(26px, 2.1875vw, 42px);
+    line-height: 1.02;
+    letter-spacing: -0.03333em;
+    text-transform: uppercase;
+    color: var(--color-firefly);
+}
+
+/* 56px heading used once, in the About expertise section */
+.rj-heading-feature {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(30px, 2.9167vw, 56px);
+    line-height: 0.98;
+    letter-spacing: -0.03214em;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+/* the 88px interior heading on a light section */
+.rj-heading-interior--dark {
+    color: var(--color-firefly);
+}
+
+/* the 56px heading on a light section */
+.rj-heading-feature--dark {
+    color: var(--color-firefly);
+}
+
+/* the 46px heading on a light section */
+.rj-heading-card--dark {
+    color: var(--color-firefly);
+}
+
+/* 16px / 27.2px body copy for the Repower page; colour set by context */
+.rj-text-body {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 27.2px;
+}
+
+/* 17px / 29.75px body copy; colour is set by the section it sits in */
+.rj-text-lead {
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 29.75px;
+}
+
+/* ---- spec card ---- */
+/* label + bold line + short paragraph. Light by default; --dark for     */
+/* the navy and photo sections.                                           */
+.rj-spec-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 100%;
+    min-height: 141px;
+    padding: 24px;
+    background: var(--color-catskill-white);
+    box-shadow: inset 0 0 0 1px var(--color-mystic-light);
+}
+
+.rj-spec-card--dark {
+    background: var(--white-04);
+    box-shadow: inset 0 0 0 1px var(--white-12);
+}
+
+.rj-spec-card__label {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 12.5px;
+    line-height: normal;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-milano-red);
+}
+
+.rj-spec-card__title {
+    margin: 0;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: normal;
+    letter-spacing: 2.6px;
+    text-transform: uppercase;
+    color: var(--color-firefly);
+}
+
+.rj-spec-card__text {
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 24.75px;
+    color: var(--color-blue-bayoux);
+}
+
+.rj-spec-card--dark .rj-spec-card__title {
+    color: var(--color-white);
+}
+
+.rj-spec-card--dark .rj-spec-card__text {
+    color: var(--white-80);
+}
+
+/* eyebrow + heading block that sits above a grid of cards */
+.rj-section-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 48px;
+}
+
+/* ---- buttons ---- */
+/* Base + one fill modifier. Height comes from the label and padding, */
+/* the way Figma's auto-layout buttons size themselves.               */
+.rj-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 32px;
+        font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+}
+
+.rj-button--small {
+    font-size: 12.5px;
+}
+
+/* the 55px CTAs in the Sell/Trade hero and summary row */
+.rj-button--large {
+    height: 55px;
+    padding-block: 0;
+    padding-inline: 34px;
+}
+
+.rj-button--block {
+    width: 100%;
+}
+
+/* the 12.5px white buttons set tighter: 16px / 28px */
+.rj-button--compact {
+    padding: 16px 28px;
+}
+
+/* the 220px request-service buttons */
+.rj-button--wide {
+    min-width: 220px;
+}
+
+.rj-button--primary {
+    background: var(--color-signal-red);
+    color: var(--color-white);
+}
+
+.rj-button--primary:hover {
+    background: var(--color-signal-red-hover);
+    color: var(--color-white);
+}
+
+.rj-button--accent {
+    background: var(--color-milano-red);
+    color: var(--color-white);
+}
+
+.rj-button--accent:hover {
+    background: var(--color-signal-red);
+    color: var(--color-white);
+}
+
+.rj-button--dark {
+    background: var(--color-firefly);
+    color: var(--color-white);
+}
+
+.rj-button--dark:hover {
+    background: var(--color-milano-red);
+    color: var(--color-white);
+}
+
+.rj-button--light {
+    background: var(--color-white);
+    color: var(--color-firefly);
+}
+
+.rj-button--light:hover {
+    background: var(--color-signal-red);
+    color: var(--color-white);
+}
+
+.rj-button--outline {
+    border: 1px solid var(--white-45);
+    color: var(--color-white);
+}
+
+.rj-button--outline:hover {
+    background: var(--color-white);
+    border-color: var(--color-white);
+    color: var(--color-firefly);
+}
+
+/* the Facebook / Instagram buttons set Archivo, not Sora, and a      */
+/* fainter outline than the hero's secondary button                    */
+.rj-button--social {
+    padding: 12px 20px;
+    border: 1px solid var(--white-30);
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 11.5px;
+    line-height: 13px;
+    letter-spacing: 1.8px;
+}
+
+/* ---- underlined text link ---- */
+.rj-link {
+    display: inline-block;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--white-50);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 12.5px;
+    line-height: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.rj-link--light {
+    color: var(--color-white);
+}
+
+.rj-link--dark {
+    color: var(--color-firefly);
+}
+
+.rj-link--accent {
+    border-bottom-color: var(--color-signal-red);
+}
+
+.rj-link:hover,
+.rj-category-card:hover .rj-link,
+.rj-brand-tile:hover .rj-link {
+    border-bottom-color: var(--color-signal-red);
+}
+
+.rj-link--accent:hover {
+    color: var(--color-signal-red);
+}
+
+/* ---- section header ---- */
+/* eyebrow + heading on the left, a link or button pinned to the      */
+/* baseline on the right; wraps under the heading when narrow         */
+.rj-section-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.rj-section-header__title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* ---- form fields ---- */
+/* shared by the Sell/Trade valuation form and the Schedule Demo form */
+.rj-field__label {
+    display: block;
+    margin: 0 0 8px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: 11px;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--color-firefly);
+}
+
+.rj-field__input {
+    display: block;
+    width: 100%;
+    height: 58px;
+    padding: 14px;
+    border: 1px solid var(--color-mystic-light);
+    border-radius: 0;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 29.75px;
+    color: var(--color-firefly);
+    background-color: var(--color-catskill-white);
+    transition: border-color .25s ease, background-color .25s ease;
+}
+
+.rj-field__input::placeholder {
+    color: var(--color-blue-bayoux);
+}
+
+.rj-field__input:focus {
+    outline: none;
+    border-color: var(--color-milano-red);
+    background-color: var(--color-white);
+}
+
+/* native arrow swapped for Figma's 16px chevron; the unselected  */
+/* "Select Condition..." option reads in the placeholder colour    */
+.rj-field__input--select {
+    padding-right: 44px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url('../images/common/icon-chevron-down.svg');
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px 16px;
+    cursor: pointer;
+}
+
+.rj-field__input--select:invalid {
+    color: var(--color-blue-bayoux);
+}
+
+/* compact fields (Schedule Demo): 54px tall, 12px inset */
+.rj-field__input--compact {
+    height: 54px;
+    padding: 12px;
+}
+
+/* inputs that sit on a grey card: white, borderless */
+.rj-field__input--on-tint {
+    background-color: var(--color-white);
+    border-color: transparent;
+}
+
+.rj-field__input--on-tint:focus {
+    border-color: var(--color-milano-red);
+}
+
+/* the Contact select uses the Blue Bayoux chevron, not the Slate Gray one */
+.rj-field__input--select-dark {
+    background-image: url('../images/contact/icon-chevron-down.svg');
+}
+
+.rj-field__input--compact.rj-field__input--select {
+    padding-right: 40px;
+    background-position: right 12px center;
+}
+
+/* the placeholder is real text until the field is focused (see the   */
+/* date input region in script.js); the calendar icon is drawn here    */
+.rj-field__input--date {
+    position: relative;
+    background-image: url('../images/schedule-demo/icon-calendar.svg');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 16px;
+}
+
+.rj-field__input--compact.rj-field__input--date {
+    padding-right: 40px;
+}
+
+/* stretches the browser's own picker trigger over the whole field so  */
+/* a click anywhere opens it, while our icon stays visible underneath  */
+.rj-field__input--date::-webkit-calendar-picker-indicator {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.rj-field__input--textarea {
+    height: 100px;
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* inline confirmation shown by the .js-form handler */
+.rj-form-message {
+    margin-top: 16px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 24px;
+    color: var(--color-firefly);
+}
+
+/* ---- two-column form pages ---- */
+/* the heading + form column shared by Schedule Demo and Contact */
+.rj-form-column {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+
+.rj-form-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Figma sets this one heading at 46px — not part of the shared scale */
+.rj-form-intro__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(30px, 2.396vw, 46px);
+    line-height: 1;
+    letter-spacing: -0.03043em;
+    text-transform: uppercase;
+    color: var(--color-firefly);
+}
+
+.rj-form-intro__lead {
+    color: var(--color-blue-bayoux);
+}
+
+/* a form in a bordered card; --tinted is the grey variant whose inputs go white */
+.rj-form-card {
+    padding: 40px;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-mystic-light);
+}
+
+/* a bespoke 2-column field grid: 16px between columns, 20px between rows */
+.rj-form-card__fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 16px;
+}
+
+.rj-form-card__field--full {
+    grid-column: 1 / -1;
+}
+
+.rj-form-card__submit {
+    margin-top: 20px;
+    padding: 14px;
+}
+
+.rj-form-card--tinted {
+    background: var(--color-catskill-white);
+    box-shadow: inset 0 0 0 1px var(--color-mystic);
+}
+
+/* ---- interior page hero ---- */
+/* Photo + scrim + a left-aligned column of copy. Each page sets its own   */
+/* height, vertical alignment and --hero-scrim gradient.                    */
+.rj-page-hero {
+    position: relative;
+    display: flex;
+    overflow: hidden;
+    background: var(--color-firefly);
+}
+
+.rj-page-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: var(--hero-scrim);
+}
+
+.rj-page-hero__background {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* eyebrow + heading stacked tighter than the rest of the hero copy */
+.rj-page-hero__headline {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.rj-page-hero__inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+/* ============================== */
+/* 3. header / nav css starts here*/
+/* ============================== */
+.rj-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+
+/* ---- top bar ---- */
+.rj-topbar {
+    height: var(--topbar-height);
+    background: var(--color-firefly);
+    border-bottom: 1px solid var(--white-12);
+}
+
+.rj-topbar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.rj-topbar__actions {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+}
+
+.rj-topbar__text {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 10.5px;
+    line-height: 11px;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--white-55);
+}
+
+.rj-topbar__phone {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 10.5px;
+    line-height: 11px;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: var(--color-milano-red);
+}
+
+.rj-topbar__phone:hover {
+    color: var(--color-signal-red);
+}
+
+.rj-topbar__social {
+    display: flex;
+    gap: 8px;
+}
+
+.rj-topbar__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+}
+
+.rj-topbar__social-link:hover {
+    opacity: .7;
+}
+
+/* ---- main nav bar ---- */
+.rj-navbar {
+    height: var(--navbar-height);
+    background: var(--color-white);
+    border-bottom: 1px solid var(--color-mystic);
+}
+
+.rj-navbar__inner {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+/* the logo sits dead centre; the two nav groups share the remaining  */
+/* width equally so it stays centred whatever the link lengths are    */
+.rj-navbar__logo {
+    flex-shrink: 0;
+    padding-block: 18px;
+}
+
+.rj-navbar__logo img {
+    width: 360px;
+    max-width: 100%;
+    height: auto;
+}
+
+.rj-nav {
+    display: flex;
+    flex: 1 1 0;
+    align-items: center;
+    gap: 52px;
+}
+
+.rj-nav--end {
+    justify-content: flex-end;
+}
+
+/* a nav item stretches the full bar height, so its panel (top: 100%)   */
+/* opens flush under the bar; --static lets the Sales panel span the    */
+/* whole header instead                                                  */
+.rj-nav {
+    align-self: stretch;
+}
+
+.rj-nav__item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+}
+
+.rj-nav__item--static {
+    position: static;
+}
+
+.rj-nav__link {
+    padding: 26px 2px 24px;
+    border-bottom: 3px solid transparent;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: normal;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-firefly);
+}
+
+.rj-nav__link:hover,
+.rj-nav__link[aria-expanded="true"] {
+    border-bottom-color: var(--color-signal-red);
+}
+
+/* the dropdown triggers are buttons that look like the links */
+button.rj-nav__link {
+    border-width: 0 0 3px;
+    border-style: solid;
+    border-color: transparent;
+    background: none;
+    cursor: pointer;
+}
+
+button.rj-nav__link:hover,
+button.rj-nav__link[aria-expanded="true"] {
+    border-bottom-color: var(--color-signal-red);
+}
+
+/* ---- dropdown panels (Service, Resources) ---- */
+.rj-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 320px;
+    padding: 32px 63px 47px;
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-border);
+    border-top: 0;
+}
+
+.rj-dropdown__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8.25px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.rj-dropdown__link {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 29.75px;
+    color: var(--color-firefly);
+    transition: color .25s ease;
+}
+
+.rj-dropdown__link:hover {
+    color: var(--color-signal-red);
+}
+
+/* ---- inventory mega menu (Sales) ---- */
+.rj-mega {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-white);
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.08);
+}
+
+.rj-mega__body {
+    display: grid;
+    grid-template-columns: 180px 180px minmax(0, 1fr);
+    column-gap: 120px;
+    align-items: start;
+    padding-block: 47px 127px;
+}
+
+.rj-mega__label {
+    margin: 0 0 24px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: normal;
+    letter-spacing: 2.6px;
+    text-transform: uppercase;
+    color: var(--color-blue-bayoux);
+}
+
+.rj-mega__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8.25px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.rj-mega__link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 29.75px;
+    white-space: nowrap;
+    color: var(--color-firefly);
+    transition: color .25s ease;
+}
+
+.rj-mega__link:hover {
+    color: var(--color-signal-red);
+}
+
+.rj-mega__count {
+    padding: 2px 10px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 11px;
+    line-height: 20px;
+    letter-spacing: 1.54px;
+    text-transform: uppercase;
+    color: var(--color-white);
+    background: var(--color-venice-blue);
+}
+
+.rj-mega__cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 180px;
+    height: 48px;
+    margin-top: 40px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 26.4px;
+    color: var(--color-downriver);
+    background: var(--downriver-16);
+    transition: background-color .25s ease, color .25s ease;
+}
+
+.rj-mega__cta:hover {
+    color: var(--color-white);
+    background: var(--color-downriver);
+}
+
+.rj-mega__tiles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2px;
+}
+
+.rj-mega-tile {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    height: 300px;
+    padding: 24px;
+    overflow: hidden;
+    background: var(--color-firefly);
+}
+
+.rj-mega-tile::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.96), rgba(0, 0, 0, 0) 64%);
+}
+
+.rj-mega-tile__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .4s ease;
+}
+
+.rj-mega-tile:hover .rj-mega-tile__photo {
+    transform: scale(1.04);
+}
+
+/* Figma slides the first two photos sideways inside their tiles */
+.rj-crop-mega-aluminum {
+    object-position: 41% 50%;
+}
+
+.rj-crop-mega-fiberglass {
+    object-position: 27% 100%;
+}
+
+.rj-mega-tile__title {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 26px;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+.rj-mega__bar {
+    background: var(--color-big-stone);
+    box-shadow: inset 0 1px 0 var(--white-10);
+}
+
+.rj-mega__bar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    height: 80px;
+}
+
+.rj-mega__note {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 29.75px;
+    color: var(--white-80);
+}
+
+.rj-mega__all {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 29.75px;
+    white-space: nowrap;
+    color: var(--color-signal-red);
+}
+
+.rj-mega__all img {
+    transition: transform .25s ease;
+}
+
+.rj-mega__all:hover img {
+    transform: translateX(4px);
+}
+
+/* no mobile nav exists in the Figma frame, so the burger is built    */
+/* from the same navy and 3px rhythm; hidden until ≤991               */
+.rj-burger {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+}
+
+.rj-burger span {
+    display: block;
+    width: 26px;
+    height: 3px;
+    background: var(--color-firefly);
+    transition: background-color .25s ease;
+}
+
+.rj-burger:hover span {
+    background: var(--color-signal-red);
+}
+
+/* ============================== */
+/* 4. mobile menu css starts here */
+/* ============================== */
+.rj-mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 110;
+    background: rgba(11, 21, 38, 0.6);
+}
+
+.rj-mobile-menu-overlay.is-open {
+    display: block;
+}
+
+.rj-mobile-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 120;
+    width: 320px;
+    max-width: 85vw;
+    padding: 88px 32px 32px;
+    overflow-y: auto;
+    background: var(--color-firefly);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform .3s ease, visibility .3s ease;
+}
+
+.rj-mobile-menu.is-open {
+    transform: translateX(0);
+    visibility: visible;
+}
+
+.rj-mobile-menu__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+    line-height: 1;
+    color: var(--color-white);
+}
+
+.rj-mobile-menu__close:hover {
+    color: var(--color-signal-red);
+}
+
+.rj-mobile-menu__link {
+    display: block;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--white-12);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+.rj-mobile-menu__link:hover {
+    color: var(--color-signal-red);
+}
+
+.rj-mobile-menu__toggle {
+    position: relative;
+    width: 100%;
+    text-align: left;
+    background: none;
+    cursor: pointer;
+}
+
+.rj-mobile-menu__toggle::after {
+    content: "+";
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    font-size: 22px;
+    font-weight: 400;
+}
+
+.rj-mobile-menu__toggle[aria-expanded="true"]::after {
+    content: "\2212";
+}
+
+.rj-mobile-menu__sub {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0 16px 16px;
+    border-bottom: 1px solid var(--white-12);
+}
+
+.rj-mobile-menu__sublink {
+    padding: 9px 0;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--white-80);
+}
+
+.rj-mobile-menu__sublink:hover {
+    color: var(--color-signal-red);
+}
+
+.rj-mobile-menu__sublabel {
+    margin: 12px 0 2px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 2.6px;
+    text-transform: uppercase;
+    color: var(--white-55);
+}
+
+.rj-mobile-menu__phone {
+    width: 100%;
+    margin-top: 32px;
+}
+
+/* ============================== */
+/* 5. footer css starts here      */
+/* ============================== */
+
+/* ---- newsletter band ---- */
+.rj-newsletter {
+    padding-block: 68px;
+    background: var(--color-venice-blue);
+}
+
+.rj-newsletter__inner {
+    display: flex;
+    align-items: flex-start;
+}
+
+.rj-newsletter__intro {
+    display: flex;
+    flex: 0 0 704px;
+    flex-direction: column;
+    gap: 13.375px;
+    max-width: 100%;
+}
+
+/* Figma sets this one heading at 42px — not part of the shared scale */
+.rj-newsletter__title {
+    margin: 0;
+    padding-bottom: 0.83px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(28px, 2.625vw, 42px);
+    line-height: 1.02;
+    letter-spacing: -0.03333em;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+.rj-newsletter__lead {
+    max-width: 460px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 24.75px;
+    color: var(--white-85);
+}
+
+.rj-newsletter__form {
+    display: flex;
+    flex: 1 1 0;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-width: 0;
+}
+
+.rj-newsletter__input {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 52px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 0;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--color-firefly);
+    background: var(--color-white);
+}
+
+.rj-newsletter__input::placeholder {
+    color: var(--color-boulder);
+}
+
+.rj-newsletter__message {
+    flex-basis: 100%;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--color-white);
+}
+
+/* ---- link columns ---- */
+.rj-footer__main {
+    padding-block: 88px 28px;
+    background: var(--color-white);
+    border-top: 1px solid var(--color-mystic);
+}
+
+/* seven equal columns, the brand block spanning two — a bespoke       */
+/* split that the 12-column Bootstrap grid can't express               */
+.rj-footer__columns {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 40px 28px;
+}
+
+.rj-footer__brand {
+    grid-column: span 2;
+}
+
+.rj-footer__logo {
+    width: 240px;
+    height: auto;
+}
+
+.rj-footer__address {
+    margin-top: 21.25px;
+    font-family: var(--font-body);
+    font-style: normal;
+    font-size: 15px;
+    line-height: 25.5px;
+    color: var(--color-blue-bayoux);
+}
+
+.rj-footer__phone {
+    display: block;
+    width: fit-content;
+    margin-top: 16.75px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 26px;
+    line-height: normal;
+    letter-spacing: -0.03077em;
+    color: var(--color-firefly);
+}
+
+.rj-footer__phone:hover {
+    color: var(--color-milano-red);
+}
+
+.rj-footer__heading {
+    margin-bottom: 18px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: 11px;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--color-firefly);
+}
+
+.rj-footer__list {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.rj-footer__link {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    line-height: 16px;
+    color: var(--color-blue-bayoux);
+}
+
+.rj-footer__link:hover {
+    color: var(--color-milano-red);
+}
+
+.rj-footer__hours {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    line-height: 16px;
+}
+
+.rj-footer__hours-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.rj-footer__hours-row dt {
+    font-weight: 400;
+    color: var(--color-blue-bayoux);
+}
+
+.rj-footer__hours-row dd {
+    font-weight: 600;
+    color: var(--color-firefly);
+    white-space: nowrap;
+}
+
+.rj-footer__hours-row .rj-footer__hours-closed {
+    color: var(--color-milano-red);
+}
+
+.rj-footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    margin-top: 50px;
+    padding-top: 22px;
+    border-top: 1px solid var(--color-mystic);
+}
+
+.rj-footer__copyright,
+.rj-footer__legal-link {
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    line-height: normal;
+    color: var(--color-slate-gray);
+}
+
+.rj-footer__legal {
+    display: flex;
+    gap: 20px;
+}
+
+.rj-footer__legal-link:hover {
+    color: var(--color-milano-red);
+}
+
+/* ============================== */
+/* 6. home page css starts here   */
+/* ============================== */
+
+/* ---- hero ---- */
+/* 860 tall: the 820 photo, then 40px of navy beneath it, as in Figma */
+.rj-hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: 860px;
+    padding-bottom: 80px;
+    background: var(--color-firefly);
+}
+
+.rj-hero__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 820px;
+    object-fit: cover;
+}
+
+/* darkens the video toward the navy ground and under the heading;     */
+/* Figma's own gradient stops weren't exportable, so these are matched   */
+/* by eye to the design render                                        */
+.rj-hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 820px;
+    z-index: 1;
+    background: linear-gradient(to bottom, rgba(11, 21, 38, 0.2) 0%, rgba(11, 21, 38, 0.35) 40%, rgba(11, 21, 38, 0.85) 80%, var(--color-firefly) 100%);
+}
+
+.rj-hero__inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 19.2px;
+}
+
+.rj-hero__eyebrow {
+    color: var(--white-75);
+}
+
+.rj-hero__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    padding-top: 14.8px;
+}
+
+.rj-hero__lead {
+    max-width: 520px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 27.2px;
+    color: var(--white-80);
+}
+
+.rj-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.rj-hero__button {
+    height: 54px;
+    padding-block: 0;
+    padding-inline: 34px;
+}
+
+/* ---- boats by category ---- */
+.rj-categories {
+    padding-top: 110px;
+    background: var(--color-firefly);
+}
+
+.rj-categories__list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 44px;
+}
+
+.rj-category-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 400px;
+    overflow: hidden;
+    color: var(--color-white);
+}
+
+/* fades the photo out from the text side */
+.rj-category-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(to right, rgba(11, 21, 38, 0.96), rgba(11, 21, 38, 0.24));
+}
+
+.rj-category-card__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .6s ease;
+}
+
+.rj-category-card:hover .rj-category-card__photo {
+    transform: scale(1.03);
+}
+
+/* designed crops — Figma's pan inside the 1920 x 400 frame */
+.rj-crop-category-aluminum {
+    object-position: 50% 83.24%;
+}
+
+.rj-crop-category-fiberglass {
+    object-position: 50% 70.23%;
+}
+
+.rj-category-card__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    padding-block: 58px;
+}
+
+.rj-category-card__text {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    max-width: 560px;
+}
+
+.rj-category-card__count {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: 11px;
+    letter-spacing: 2.6px;
+    text-transform: uppercase;
+    color: var(--color-milano-red);
+}
+
+.rj-category-card__description {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 26.4px;
+    color: var(--white-78);
+}
+
+/* ---- brands ---- */
+.rj-brands {
+    background: var(--color-downriver);
+}
+
+.rj-brands__header {
+    padding-block: 90px;
+}
+
+.rj-brands__eyebrow {
+    color: var(--white-80);
+}
+
+.rj-brands__lead {
+    max-width: 340px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 15px;
+    color: var(--white-75);
+}
+
+/* the row's -1px side margins would otherwise add 2px of page width */
+.rj-brands__grid {
+    overflow: hidden;
+}
+
+.rj-brand-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 300px;
+    padding: 52px 48px;
+    overflow: hidden;
+    color: var(--color-white);
+}
+
+.rj-brand-tile::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(to right, var(--color-downriver), rgba(8, 32, 63, 0.24));
+}
+
+.rj-brand-tile__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .6s ease;
+}
+
+.rj-brand-tile:hover .rj-brand-tile__photo {
+    transform: scale(1.03);
+}
+
+/* designed crops — Figma's zoom + pan for each 959 x 300 tile; every */
+/* box is larger than the tile on both axes, so it always covers it    */
+.rj-crop-brand-reaper,
+.rj-crop-brand-bennington,
+.rj-crop-brand-skeeter,
+.rj-crop-brand-war-eagle,
+.rj-crop-brand-yamaha {
+    inset: auto;
+    max-width: none;
+}
+
+.rj-crop-brand-reaper {
+    left: 0;
+    top: -101.12%;
+    width: 128.83%;
+    height: 274.23%;
+}
+
+.rj-crop-brand-bennington {
+    left: 0;
+    top: -26.26%;
+    width: 100%;
+    height: 143.18%;
+}
+
+.rj-crop-brand-skeeter {
+    left: 0;
+    top: -57.48%;
+    width: 116.94%;
+    height: 197.63%;
+}
+
+.rj-crop-brand-war-eagle {
+    left: 0;
+    top: -59.37%;
+    width: 111%;
+    height: 190.74%;
+}
+
+.rj-crop-brand-yamaha {
+    left: -20.49%;
+    top: -128.05%;
+    width: 120.49%;
+    height: 256.09%;
+}
+
+.rj-brand-tile__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 19px;
+}
+
+.rj-brand-tile__logo {
+    display: flex;
+    align-items: center;
+    height: 48px;
+}
+
+.rj-brand-tile__description {
+    padding-bottom: 65px;
+    font-family: var(--font-body);
+    font-size: 14.5px;
+    line-height: 23.2px;
+    color: var(--white-85);
+}
+
+/* ---- featured inventory ---- */
+.rj-inventory {
+    padding-block: 110px;
+    background: var(--color-big-stone);
+}
+
+.rj-inventory__list {
+    margin-top: 44px;
+}
+
+.rj-boat-card {
+    display: block;
+    height: 100%;
+    background: var(--color-card-dark);
+    transition: transform .25s ease;
+}
+
+.rj-boat-card:hover {
+    transform: translateY(-4px);
+}
+
+/* striped placeholder, drawn in CSS exactly as Figma paints it: 9px  */
+/* bands at 135deg                                                     */
+.rj-boat-card__photo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    background: repeating-linear-gradient(135deg,
+            var(--color-card-stripe) 0 9px,
+            var(--color-card-dark) 9px 18px);
+}
+
+.rj-boat-card__photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.rj-boat-card__photo-label {
+    font-family: var(--font-label);
+    font-size: 11px;
+    line-height: normal;
+    letter-spacing: 0.6px;
+    color: var(--white-40);
+}
+
+.rj-boat-card__badge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 7px 12px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10px;
+    line-height: normal;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--color-white);
+    background: var(--color-milano-red);
+}
+
+.rj-boat-card__badge--pre-owned {
+    background: var(--color-venice-blue);
+}
+
+.rj-boat-card__body {
+    padding: 22px 22px 24px;
+}
+
+.rj-boat-card__meta {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: 11px;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--white-50);
+}
+
+.rj-boat-card__name {
+    margin: 10px 0 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 23px;
+    line-height: normal;
+    letter-spacing: -0.6px;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+/* reserves two lines so every card's price row lines up */
+.rj-boat-card__description {
+    min-height: 45.58px;
+    margin-top: 9.19px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 22.4px;
+    color: var(--white-65);
+}
+
+.rj-boat-card__footer {
+    display: flex;
+    justify-content: space-between;
+    height: 44px;
+    margin-top: 16px;
+    border-top: 1px solid var(--white-12);
+}
+
+.rj-boat-card__price {
+    padding-top: 16px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 22px;
+    line-height: normal;
+    color: var(--color-white);
+}
+
+.rj-boat-card__details {
+    padding-top: 27px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 11.5px;
+    line-height: 13px;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--color-milano-red);
+    transition: color .25s ease;
+}
+
+.rj-boat-card:hover .rj-boat-card__details {
+    color: var(--color-signal-red);
+}
+
+/* ---- service & repair ---- */
+.rj-service {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 620px;
+    padding-block: 80px;
+    overflow: hidden;
+    background: var(--color-firefly);
+}
+
+.rj-service::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(to right, rgba(11, 21, 38, 0.35) 0%, rgba(11, 21, 38, 0.92) 60%, rgba(11, 21, 38, 0.99) 96%);
+}
+
+.rj-service__background {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.rj-service__inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.rj-service__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 17.4px;
+    width: 560px;
+    max-width: 100%;
+}
+
+/* Figma sets this one heading at 56px — not part of the shared scale */
+.rj-service__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(30px, 3.5vw, 56px);
+    line-height: 0.98;
+    letter-spacing: -0.03214em;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+.rj-service__lead {
+    padding-top: 2.6px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 27.2px;
+    color: var(--white-80);
+}
+
+.rj-service__features {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    padding-block: 12.6px 14.6px;
+}
+
+.rj-service__feature {
+    padding-block: 14px;
+    border-top: 1px solid var(--white-20);
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 14.5px;
+    line-height: 16px;
+    color: var(--color-white);
+}
+
+.rj-service__feature:nth-child(even) {
+    padding-left: 20px;
+}
+
+.rj-service__feature:nth-child(n+3) {
+    border-bottom: 1px solid var(--white-20);
+}
+
+/* ---- family story ---- */
+.rj-family {
+    padding-block: 104px;
+    background: var(--color-milano-red);
+}
+
+.rj-family__intro {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 17.4px;
+}
+
+.rj-family__eyebrow {
+    color: var(--white-80);
+}
+
+/* Figma sets this one heading at 62px — not part of the shared scale */
+.rj-family__title {
+    margin: 0;
+    padding-bottom: 14.6px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(32px, 3.875vw, 62px);
+    line-height: 0.98;
+    letter-spacing: -0.03226em;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+.rj-family__story {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* Figma wraps this paragraph to four lines inside its 720px column;   */
+/* 690 reproduces those exact breaks with this font's metrics          */
+.rj-family__text {
+    max-width: 690px;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 29.75px;
+    color: var(--color-white);
+}
+
+.rj-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 16px;
+    border-top: 3px solid var(--color-white);
+}
+
+.rj-stat__number {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(26px, 8vw, 46px);
+    line-height: 1;
+    letter-spacing: -0.04348em;
+    color: var(--color-white);
+}
+
+.rj-stat__label {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--white-85);
+}
+
+/* ---- financing ---- */
+.rj-financing {
+    padding-block: 110px;
+    background: var(--color-white);
+}
+
+.rj-financing__intro {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+}
+
+.rj-financing__lead {
+    max-width: 520px;
+    padding-block: 2px 12px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 27.2px;
+    color: var(--color-blue-bayoux);
+}
+
+.rj-step {
+    display: flex;
+    gap: 24px;
+    padding-block: 26px;
+    border-top: 1px solid var(--color-mystic-light);
+}
+
+.rj-step:last-child {
+    border-bottom: 1px solid var(--color-mystic-light);
+}
+
+.rj-step__number {
+    flex: 0 0 48px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1;
+    color: var(--color-milano-red);
+}
+
+.rj-step__text {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rj-step__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 15px;
+    line-height: normal;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: var(--color-firefly);
+}
+
+.rj-step__description {
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 24px;
+    color: var(--color-blue-bayoux);
+}
+
+/* ---- boating blog ---- */
+.rj-blog {
+    padding-block: 104px;
+    background: var(--color-catskill-white);
+}
+
+.rj-blog__list {
+    margin-top: 44px;
+}
+
+.rj-blog-card {
+    display: block;
+}
+
+.rj-blog-card__photo {
+    position: relative;
+    aspect-ratio: 462.67 / 220;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.rj-blog-card__photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    transition: transform .6s ease;
+}
+
+.rj-blog-card:hover .rj-blog-card__photo img {
+    transform: scale(1.03);
+}
+
+.rj-blog-card__category {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: 11px;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--color-milano-red);
+}
+
+.rj-blog-card__title {
+    margin: 12px 0 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 26.25px;
+    letter-spacing: -0.4px;
+    color: var(--color-firefly);
+    transition: color .25s ease;
+}
+
+.rj-blog-card:hover .rj-blog-card__title {
+    color: var(--color-milano-red);
+}
+
+.rj-blog-card__excerpt {
+    margin-top: 10px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 24px;
+    color: var(--color-blue-bayoux);
+}
+
+/* designed crops — Figma's zoom + pan inside the 463 x 220 frame */
+.rj-crop-blog-fishing-report {
+    inset: auto;
+    left: 0;
+    top: -16.98%;
+    width: 100%;
+    height: 133.97%;
+}
+
+.rj-crop-blog-buyers-guide {
+    inset: auto;
+    left: -2.47%;
+    top: 0;
+    width: 104.94%;
+    height: 100%;
+}
+
+.rj-crop-blog-service-tips {
+    inset: auto;
+    left: 0;
+    top: -20.15%;
+    width: 100%;
+    height: 140.31%;
+}
+
+/* ---- social feed ---- */
+.rj-social {
+    padding-block: 90px;
+    background: var(--color-firefly);
+}
+
+.rj-social__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px 24px;
+    margin-bottom: 28px;
+}
+
+/* Figma sets this one heading at 46px with auto line height */
+.rj-social__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(28px, 2.875vw, 46px);
+    line-height: normal;
+    letter-spacing: -0.03478em;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+.rj-social__links {
+    display: flex;
+    gap: 10px;
+}
+
+.rj-social-tile {
+    position: relative;
+    display: block;
+    aspect-ratio: 352.5 / 240;
+    overflow: hidden;
+}
+
+.rj-social-tile img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    transition: transform .6s ease;
+}
+
+.rj-social-tile:hover img {
+    transform: scale(1.05);
+}
+
+/* designed crops — Figma's zoom + pan inside the 353 x 240 frame */
+.rj-crop-social-duck-hunters {
+    inset: auto;
+    left: 0;
+    top: -8.75%;
+    width: 100%;
+    height: 117.5%;
+}
+
+.rj-crop-social-bass {
+    inset: auto;
+    left: -3.44%;
+    top: 0;
+    width: 106.88%;
+    height: 100%;
+}
+
+.rj-crop-social-beach {
+    inset: auto;
+    left: -1.08%;
+    top: 0;
+    width: 102.17%;
+    height: 100%;
+}
+
+.rj-crop-social-couple {
+    inset: auto;
+    left: -26%;
+    top: 0;
+    width: 152%;
+    height: 100%;
+}
+
+/* ============================== */
+/* 7. sell / trade page starts here */
+/* ============================== */
+
+/* ---- hero ---- */
+/* base styles come from .rj-page-hero in the common region */
+.rj-sell-hero {
+    --hero-scrim: linear-gradient(67.38deg, rgba(11, 21, 38, 0.96) 7.4%, rgba(11, 21, 38, 0.6) 92.6%);
+    align-items: flex-end;
+    min-height: 800px;
+    padding-block: 120px;
+}
+
+.rj-sell-hero__lead {
+    max-width: 800px;
+    color: var(--white-80);
+}
+
+.rj-sell-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* Figma draws this 1px border inside the frame, so it is an inset
+   shadow here: it adds nothing to the box size */
+
+/* ---- how it works ---- */
+.rj-process {
+    padding-block: 100px;
+    background: var(--color-white);
+}
+
+.rj-process-card {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    height: 100%;
+    padding: 40px;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-mystic-light);
+}
+
+.rj-process-card__number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 32px;
+    color: var(--color-white);
+    background: var(--color-downriver);
+}
+
+.rj-process-card__text {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.rj-process-card__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 23px;
+    line-height: normal;
+    letter-spacing: -0.6px;
+    text-transform: uppercase;
+    color: var(--color-firefly);
+}
+
+.rj-process-card__description {
+    color: var(--color-blue-bayoux);
+}
+
+/* ---- why sell or trade with us ---- */
+/* no top padding: the photo sits flush under the steps section */
+.rj-why {
+    padding-bottom: 100px;
+    background: var(--color-white);
+}
+
+.rj-why__photo {
+    position: relative;
+    aspect-ratio: 1440 / 520;
+    overflow: hidden;
+}
+
+.rj-why__photo img {
+    position: absolute;
+    max-width: none;
+    object-fit: cover;
+}
+
+/* designed crop — Figma's zoom + pan inside the 1440 x 520 frame */
+.rj-crop-why-photo {
+    left: -0.83%;
+    top: -70.77%;
+    width: 105.62%;
+    height: 195%;
+}
+
+.rj-why__summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px 40px;
+    margin-top: 40px;
+}
+
+.rj-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 1075px;
+}
+
+.rj-checklist__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    min-height: 30px;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 29.75px;
+    color: var(--color-firefly);
+}
+
+/* centres the 20px tick on the first 29.75px line */
+.rj-checklist__item img {
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+
+/* ---- trade-in advantages ---- */
+.rj-advantages {
+    padding-block: 100px;
+    background: var(--color-firefly);
+}
+
+.rj-advantage-card {
+    height: 100%;
+    min-height: 197px;
+    padding: 32px;
+    color: var(--color-white);
+    background: var(--white-04);
+    box-shadow: inset 0 0 0 1px var(--white-12);
+}
+
+.rj-advantage-card__title {
+    margin: 0 0 16px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 26.25px;
+    letter-spacing: -0.4px;
+}
+
+/* ---- valuation request ---- */
+.rj-request {
+    padding-block: 100px;
+    background: var(--color-catskill-white);
+}
+
+.rj-request__layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 120px;
+}
+
+.rj-request__intro {
+    display: flex;
+    flex: 0 0 560px;
+    flex-direction: column;
+    gap: 48px;
+    max-width: 100%;
+}
+
+.rj-request__heading-block {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.rj-request__lead {
+    color: var(--color-blue-bayoux);
+}
+
+.rj-contact-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 400px;
+    max-width: 100%;
+    padding: 32px;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-mystic-light);
+}
+
+.rj-contact-card__title {
+    margin: 0;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 29.75px;
+    text-transform: uppercase;
+    color: var(--color-milano-red);
+}
+
+.rj-contact-card__row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.rj-contact-card__label {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: 11px;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--color-firefly);
+}
+
+.rj-contact-card__value {
+    font-family: var(--font-body);
+    font-style: normal;
+    font-size: 17px;
+    line-height: 29.75px;
+    color: var(--color-blue-bayoux);
+}
+
+a.rj-contact-card__value:hover {
+    color: var(--color-milano-red);
+}
+
+.rj-request__form {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 48px;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-mystic-light);
+}
+
+/* navy variant: copy column and form share the width equally */
+.rj-request--dark {
+    padding-block: 110px;
+    background: var(--color-big-stone);
+}
+
+/* two equal halves either side of the 120px gap */
+.rj-request__intro--wide {
+    flex: 0 0 calc(50% - 60px);
+}
+
+.rj-request__lead--light {
+    color: var(--white-70);
+}
+
+.rj-contact-card--dark {
+    width: 100%;
+    gap: 24px;
+    background: var(--color-firefly);
+    box-shadow: inset 0 0 0 1px var(--white-10);
+}
+
+.rj-contact-card__label--light {
+    color: var(--color-white);
+}
+
+.rj-contact-card__value--light {
+    color: var(--white-70);
+}
+
+/* the white form sits straight on the navy band, so it needs no rule */
+.rj-request__form--flush {
+    flex: 0 0 calc(50% - 60px);
+    box-shadow: none;
+}
+
+.rj-request__submit {
+    width: 100%;
+    margin-top: 24px;
+    padding: 16px;
+}
+
+/* ---- local seo copy ---- */
+.rj-directory {
+    padding-block: 80px;
+    background: var(--color-white);
+    box-shadow: inset 0 1px 0 var(--color-mystic-light);
+}
+
+.rj-directory__title {
+    margin: 0 0 24px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-slate-gray);
+}
+
+.rj-directory__text {
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 30px;
+    color: var(--color-blue-bayoux);
+}
+
+/* ============================== */
+/* 8. schedule demo page starts here */
+/* ============================== */
+
+/* ---- hero ---- */
+/* the copy block is taller than the 460px frame less its padding, so   */
+/* Figma centres it and lets it overflow; 65px is that centred inset     */
+.rj-demo-hero {
+    --hero-scrim: var(--hero-scrim-interior);
+    align-items: center;
+    min-height: 460px;
+    padding-block: 65px;
+}
+
+.rj-demo-hero__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    /* an explicit width so the meta row's max-width:100% has something to  */
+    /* resolve against (a shrink-to-fit parent would grow to its 720px) */
+    width: 100%;
+    max-width: 960px;
+}
+
+.rj-demo-hero__lead {
+    max-width: 880px;
+    color: var(--color-light-gray);
+}
+
+.rj-demo-hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 24px;
+    width: 720px;
+    max-width: 100%;
+    padding-top: 8px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: 11px;
+    text-transform: uppercase;
+    color: var(--color-slate-gray);
+}
+
+.rj-demo-hero__meta-item {
+    letter-spacing: 2.2px;
+}
+
+.rj-demo-hero__meta-item--places {
+    letter-spacing: 2px;
+}
+
+/* ---- sea trial request + what to expect ---- */
+.rj-demo {
+    padding-block: 96px;
+    background: var(--color-catskill-white);
+}
+
+.rj-demo__layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 120px;
+}
+
+.rj-demo__expectations {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: 40px;
+    min-width: 0;
+}
+
+.rj-demo__expectations-header {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.rj-expectations {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.rj-expectation {
+    display: flex;
+    align-items: flex-start;
+    min-height: 80px;
+    gap: 20px;
+}
+
+.rj-expectation__number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 26px;
+    color: var(--color-white);
+    background: var(--color-firefly);
+}
+
+.rj-expectation__text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.rj-expectation__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-firefly);
+}
+
+.rj-expectation__description {
+    color: var(--color-blue-bayoux);
+}
+
+/* ---- faqs ---- */
+.rj-demo-faq {
+    padding-block: 96px;
+    background: var(--color-white);
+}
+
+.rj-faq-card {
+    height: 100%;
+    min-height: 193px;
+    padding: 32px;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-mystic-light);
+}
+
+.rj-faq-card__question {
+    margin: 0 0 12px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 26.25px;
+    letter-spacing: -0.4px;
+    color: var(--color-firefly);
+}
+
+.rj-faq-card__answer {
+    color: var(--color-blue-bayoux);
+}
+
+/* ---- trust metrics ---- */
+.rj-metrics {
+    padding-block: 80px;
+    background: var(--color-big-stone);
+}
+
+.rj-metrics__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 32px 80px;
+}
+
+.rj-metric {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.rj-metric__label {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: 11px;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--color-slate-gray);
+}
+
+/* ============================== */
+/* 9. contact page starts here    */
+/* ============================== */
+
+/* ---- hero ---- */
+.rj-contact-hero {
+    --hero-scrim: var(--hero-scrim-interior);
+    min-height: 460px;
+    padding-block: 120px;
+}
+
+.rj-contact-hero__inner {
+    gap: 32px;
+}
+
+.rj-contact-hero__lead {
+    max-width: 880px;
+    color: var(--color-light-gray);
+}
+
+/* designed crop — Figma zooms the photo to 113.8% of the width and       */
+/* slides it up by 21% of its own height; translate % is of the image,     */
+/* so it holds at every width (RESPONSIVE swaps to a plain cover below     */
+/* 1200, where the hero gets taller than this crop can cover)              */
+.rj-crop-contact-hero {
+    inset: auto;
+    top: 0;
+    left: 0;
+    width: 113.8%;
+    height: auto;
+    max-width: none;
+    transform: translateY(-21.02%);
+}
+
+/* ---- find us + send a message ---- */
+.rj-contact {
+    padding-block: 100px;
+    background: var(--color-white);
+}
+
+.rj-contact__layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 120px;
+}
+
+.rj-contact__details {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: 40px;
+    min-width: 0;
+}
+
+.rj-contact__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.rj-contact__title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.rj-contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rj-contact-list__item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--font-body);
+    font-style: normal;
+    font-size: 17px;
+    line-height: 29.75px;
+    color: var(--color-blue-bayoux);
+}
+
+.rj-contact-list__item img {
+    flex-shrink: 0;
+}
+
+a.rj-contact-list__item:hover {
+    color: var(--color-milano-red);
+}
+
+.rj-hours-card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 32px;
+    background: var(--color-catskill-white);
+}
+
+.rj-hours-card__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-firefly);
+}
+
+.rj-hours-card__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rj-hours-card__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 29.75px;
+}
+
+.rj-hours-card__row dt {
+    font-weight: 400;
+    color: var(--color-blue-bayoux);
+}
+
+.rj-hours-card__row dd {
+    color: var(--color-firefly);
+    text-align: right;
+}
+
+.rj-hours-card__row .rj-hours-card__closed {
+    color: var(--color-milano-red);
+}
+
+/* ---- map + driving directions ---- */
+.rj-directions {
+    padding-block: 100px;
+    background: var(--color-catskill-white);
+}
+
+.rj-directions__layout {
+    display: flex;
+    align-items: center;
+    gap: 120px;
+}
+
+.rj-directions__map {
+    flex: 1 1 0;
+    height: 420px;
+    min-width: 0;
+    overflow: hidden;
+    background: var(--color-white);
+    border: 1px solid var(--color-mystic);
+}
+
+.rj-directions__map img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.rj-directions__content {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+
+.rj-directions__header {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.rj-directions__list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.rj-direction {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.rj-direction__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-firefly);
+}
+
+.rj-direction__text {
+    color: var(--color-blue-bayoux);
+}
+
+/* ---- why visit the showroom ---- */
+.rj-visit {
+    padding-block: 120px;
+    background: var(--color-white);
+}
+
+.rj-visit__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 56px;
+    text-align: center;
+}
+
+.rj-visit-card {
+    min-height: 349px;
+}
+
+.rj-visit-card__photo {
+    height: 200px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.rj-visit-card__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .6s ease;
+}
+
+.rj-visit-card:hover .rj-visit-card__photo img {
+    transform: scale(1.03);
+}
+
+.rj-visit-card__title {
+    margin: 0 0 16px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 26.25px;
+    letter-spacing: -0.4px;
+    color: var(--color-firefly);
+}
+
+.rj-visit-card__text {
+    color: var(--color-blue-bayoux);
+}
+
+/* ---- local seo copy ---- */
+.rj-resource-guide {
+    padding-block: 80px;
+    background: var(--color-catskill-white);
+    box-shadow: inset 0 1px 0 var(--color-mystic);
+}
+
+.rj-resource-guide__title {
+    margin: 0 0 24px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: 11px;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--color-blue-bayoux);
+}
+
+.rj-resource-guide__text {
+    min-height: 90px;
+    color: var(--color-blue-bayoux);
+}
+
+/* ============================== */
+/* 10. service center page starts here */
+/* ============================== */
+
+/* ---- hero ---- */
+.rj-service-hero {
+    --hero-scrim: linear-gradient(-19.5deg, rgba(11, 21, 38, 0.6) 25%, rgba(11, 21, 38, 0.96) 75%);
+    align-items: center;
+    min-height: 680px;
+    padding-block: 96px;
+}
+
+.rj-service-hero__inner {
+    gap: 40px;
+}
+
+.rj-service-hero__lead {
+    color: var(--color-white);
+}
+
+.rj-service-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* ---- professional marine services ---- */
+.rj-services {
+    padding-block: 96px;
+    background: var(--color-white);
+}
+
+.rj-service-card {
+    height: 100%;
+    min-height: 195px;
+    padding: 32px;
+    color: var(--color-firefly);
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-gray-border);
+}
+
+.rj-service-card__title {
+    margin: 0 0 24px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 26.25px;
+    letter-spacing: -0.4px;
+}
+
+.rj-service-card__text {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 26.4px;
+}
+
+/* the row pulls its own last gap back out, so this is the full 48px */
+.rj-services__cta {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 48px;
+}
+
+/* ---- full-bleed photo bands ---- */
+/* 1920 wide at the design width, scaling with the page below that; the  */
+/* aspect-ratio also keeps the zoomed crops below able to cover the band. */
+/* Each band sets --bleed-aspect / --bleed-height (default 1920 x 600).   */
+.rj-bleed {
+    position: relative;
+    aspect-ratio: var(--bleed-aspect, 1920 / 600);
+    max-height: var(--bleed-height, 600px);
+    overflow: hidden;
+}
+
+.rj-bleed--ruled {
+    box-shadow: inset 0 -1px 0 var(--color-gray-border);
+}
+
+.rj-bleed--banner {
+    --bleed-aspect: 1920 / 520;
+    --bleed-height: 520px;
+}
+
+.rj-bleed--wide {
+    --bleed-aspect: 1920 / 560;
+    --bleed-height: 560px;
+}
+
+/* the 640px photo bands under the About sections */
+.rj-bleed--feature {
+    --bleed-aspect: 1920 / 640;
+    --bleed-height: 640px;
+}
+
+/* a navy veil over the banner so the logo reads on any photo */
+.rj-bleed--banner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(11, 21, 38, 0.4);
+}
+
+.rj-bleed__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--photo-position, 50% 50%);
+}
+
+/* Figma zooms some photos past 100% of the band and slides them up; the  */
+/* crop classes set --zoom-width / --zoom-left / --zoom-shift, and the    */
+/* shift is a translate % (of the image itself) so it holds at any width   */
+.rj-bleed__photo--zoomed {
+    inset: auto;
+    top: 0;
+    left: var(--zoom-left, 0);
+    width: var(--zoom-width, 100%);
+    height: auto;
+    max-width: none;
+    transform: translateY(var(--zoom-shift, 0));
+}
+
+.rj-crop-bleed-water {
+    --zoom-width: 114.84%;
+    --zoom-shift: -45.44%;
+}
+
+.rj-crop-bleed-banner {
+    --zoom-width: 101.15%;
+    --zoom-left: -0.34%;
+    --zoom-shift: -29.39%;
+}
+
+.rj-crop-bleed-repower {
+    --zoom-shift: -42.96%;
+}
+
+.rj-bleed__content {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.rj-bleed__logo {
+    width: 480px;
+    max-width: 60%;
+    height: auto;
+}
+
+/* ---- values ---- */
+.rj-values {
+    padding-block: 96px;
+    background: var(--color-catskill-white);
+}
+
+.rj-values__layout {
+    display: flex;
+    align-items: center;
+    gap: 80px;
+}
+
+.rj-values__copy {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+    min-width: 0;
+}
+
+.rj-values__title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.rj-bullet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rj-bullet-list__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 29.75px;
+    color: var(--color-blue-bayoux);
+}
+
+/* centres the 12px dot on the first 29.75px line */
+.rj-bullet-list__item img {
+    flex-shrink: 0;
+    margin-top: 9px;
+}
+
+.rj-values__photo {
+    flex: 1 1 0;
+    height: 520px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.rj-values__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ---- process ---- */
+.rj-workflow {
+    padding-block: 96px;
+    background: var(--color-white);
+}
+
+.rj-workflow-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+    min-height: 197px;
+    padding: 32px;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-gray-border);
+}
+
+.rj-workflow-card__number {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 26px;
+    color: var(--color-milano-red);
+}
+
+.rj-workflow-card__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 26.25px;
+    letter-spacing: -0.4px;
+    color: var(--color-firefly);
+}
+
+.rj-workflow-card__text {
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 24px;
+    color: var(--color-blue-bayoux);
+}
+
+/* ---- seasonal banner ---- */
+.rj-promo-banner {
+    padding-block: 48px;
+    background: var(--color-milano-red);
+}
+
+.rj-promo-banner__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.rj-promo-banner__text {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rj-promo-banner__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 23px;
+    line-height: normal;
+    letter-spacing: -0.6px;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+.rj-promo-banner__description {
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 29.75px;
+    color: var(--white-85);
+}
+
+/* the request form below is the shared .rj-request block (Sell/Trade too) */
+
+/* ---- local seo copy ---- */
+.rj-seo-note {
+    padding-block: 80px;
+    background: var(--color-white);
+    box-shadow: inset 0 1px 0 var(--color-gray-border);
+}
+
+/* Repower's frame uses the lighter Mystic rule instead of the grey one */
+.rj-seo-note--mystic {
+    box-shadow: inset 0 1px 0 var(--color-mystic-light);
+}
+
+.rj-seo-note__title {
+    margin: 0 0 20px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: 11px;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--color-blue-bayoux);
+}
+
+.rj-seo-note__title--spaced {
+    margin-bottom: 24px;
+}
+
+.rj-seo-note__text--soft {
+    color: var(--color-slate-gray);
+}
+
+.rj-seo-note__text {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 26.4px;
+    color: var(--color-blue-bayoux);
+}
+
+/* ============================== */
+/* 11. repower page starts here   */
+/* ============================== */
+
+/* ---- hero ---- */
+.rj-repower-hero {
+    --hero-scrim: rgba(11, 21, 38, 0.88);
+    align-items: center;
+    min-height: 820px;
+    padding-block: 96px;
+}
+
+.rj-repower-hero__inner {
+    gap: 40px;
+}
+
+.rj-repower-hero__headline,
+.rj-repower-hero__lead {
+    max-width: 1080px;
+}
+
+.rj-repower-hero__lead {
+    color: var(--white-80);
+}
+
+/* 880px of cards; the row's -8px side margins make it 896 on paper */
+.rj-repower-hero__specs {
+    align-self: stretch;
+    max-width: 896px;
+}
+
+/* ---- split sections (text + photo) ---- */
+.rj-split-section {
+    padding-block: 96px;
+    background: var(--color-white);
+}
+
+.rj-split {
+    display: flex;
+    align-items: center;
+    gap: 120px;
+}
+
+.rj-split__copy {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+    min-width: 0;
+}
+
+.rj-split__title-group {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    gap: 24px;
+}
+
+.rj-split__text {
+    color: var(--color-blue-bayoux);
+}
+
+.rj-split__facts {
+    align-self: stretch;
+}
+
+.rj-split__photo {
+    flex: 1 1 0;
+    height: 600px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.rj-split__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Financing: tinted band with 88px padding, 80px between copy and photo, */
+/* tighter copy stack                                                      */
+.rj-split-section--mystic {
+    padding-block: 88px;
+    background: var(--color-mystic);
+}
+
+.rj-split--close {
+    gap: 80px;
+}
+
+.rj-split__copy--snug {
+    gap: 24px;
+}
+
+.rj-split__title-group--tight {
+    gap: 16px;
+}
+
+.rj-split__paragraphs {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    gap: 16px;
+    opacity: 0.8;
+    color: var(--color-ebony-clay);
+}
+
+/* About: navy sections with 80px padding, 440px photos, light copy */
+.rj-split-section--dark {
+    background: var(--color-firefly);
+}
+
+.rj-split-section--compact {
+    padding-block: 80px;
+}
+
+.rj-split__photo--short {
+    height: 440px;
+}
+
+.rj-split__photo--medium {
+    height: 480px;
+}
+
+.rj-split__photo--banner {
+    height: 400px;
+}
+
+.rj-split__text--light {
+    color: var(--color-light-gray);
+}
+
+/* ---- benefits ---- */
+.rj-benefits {
+    padding-block: 96px;
+    background: var(--color-catskill-white);
+}
+
+.rj-benefits__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 1080px;
+    margin-bottom: 48px;
+}
+
+.rj-benefits__lead {
+    color: var(--color-blue-bayoux);
+}
+
+.rj-benefit-card {
+    height: 100%;
+    min-height: 144px;
+    padding: 24px;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-mystic-light);
+}
+
+.rj-benefit-card__title {
+    margin: 0 0 16px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 26.25px;
+    letter-spacing: -0.4px;
+    color: var(--color-firefly);
+}
+
+.rj-benefit-card__text {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 26.4px;
+    color: var(--color-blue-bayoux);
+}
+
+/* ---- before & after showcase ---- */
+.rj-showcase {
+    padding-block: 96px;
+    background: var(--color-firefly);
+}
+
+.rj-showcase__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 48px;
+}
+
+.rj-showcase__lead {
+    color: var(--white-80);
+}
+
+/* the first row's own gap is pulled back out, so this is the full 48px */
+.rj-showcase__comparison + .row {
+    margin-top: 48px;
+}
+
+.rj-showcase-card {
+    min-height: 406px;
+}
+
+.rj-showcase-card__photo {
+    height: 320px;
+    margin-bottom: 16px;
+    background: var(--color-placeholder-gray);
+}
+
+.rj-showcase-card__title {
+    margin: 0 0 16px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 26.25px;
+    letter-spacing: -0.4px;
+    color: var(--color-white);
+}
+
+.rj-showcase-card__text {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 26.4px;
+    color: var(--white-80);
+}
+
+/* Figma's request frame is 748px although its left column needs 780, so  */
+/* its bottom padding is effectively 68px rather than the usual 100       */
+.rj-request--snug {
+    padding-bottom: 68px;
+}
+
+/* the request form below is the shared .rj-request block */
+
+/* ============================== */
+/* 12. financing page starts here */
+/* ============================== */
+
+/* ---- hero ---- */
+.rj-fin-hero {
+    background: var(--color-firefly);
+}
+
+.rj-fin-hero__photo {
+    aspect-ratio: 1920 / 680;
+    max-height: 680px;
+    overflow: hidden;
+}
+
+.rj-fin-hero__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.rj-fin-hero__main {
+    padding-block: 80px;
+}
+
+.rj-fin-hero__inner {
+    gap: 40px;
+}
+
+.rj-fin-hero__headline {
+    max-width: 1280px;
+}
+
+.rj-fin-hero__lead {
+    max-width: 880px;
+    color: var(--white-80);
+}
+
+.rj-fin-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.rj-fin-hero__support {
+    padding-block: 80px;
+    background: var(--color-big-stone);
+}
+
+.rj-fin-hero__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: var(--white-85);
+}
+
+/* ---- copy column + stats column (hero, estimator) ---- */
+.rj-fin-columns {
+    display: flex;
+    align-items: flex-start;
+    gap: 120px;
+}
+
+.rj-fin-columns__aside {
+    flex: 0 0 520px;
+    max-width: 100%;
+}
+
+.rj-fin-columns__main {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+/* ---- label + sentence highlight ---- */
+.rj-fin-points {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.rj-fin-point {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rj-fin-point__label {
+    margin: 0;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: normal;
+    letter-spacing: 2.6px;
+    text-transform: uppercase;
+    color: var(--color-milano-red);
+}
+
+.rj-fin-point__text {
+    margin: 0;
+    color: var(--color-blue-bayoux);
+}
+
+.rj-fin-point--light .rj-fin-point__text {
+    color: var(--white-85);
+}
+
+/* ---- loan estimator ---- */
+.rj-estimator-section {
+    padding-block: 88px;
+    background: var(--color-catskill-white);
+}
+
+.rj-estimator-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.rj-estimator-copy__title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.rj-estimator-copy__text {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    color: var(--color-blue-bayoux);
+}
+
+/* the stats under the calculator sit 24px lower than the 16px column gap */
+.rj-estimator + .rj-fin-point {
+    padding-top: 24px;
+}
+
+/* Figma's 1px frame stroke sits inside the 800px box, so it is an inset shadow */
+.rj-estimator {
+    display: flex;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-gray-border);
+}
+
+.rj-estimator__controls {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+    padding: 40px;
+}
+
+.rj-estimator__field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.rj-estimator__label {
+    margin: 0;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: normal;
+    letter-spacing: 2.6px;
+    text-transform: uppercase;
+    color: var(--color-blue-bayoux);
+}
+
+.rj-estimator__label--tight {
+    letter-spacing: 2.2px;
+}
+
+.rj-estimator__amount {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: 0;
+    border-radius: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 22px;
+    line-height: normal;
+    color: var(--color-firefly);
+    background: var(--color-athens-gray);
+}
+
+.rj-estimator__amount:focus-visible,
+.rj-estimator__term:focus-visible {
+    outline: 2px solid var(--color-venice-blue);
+    outline-offset: 2px;
+}
+
+.rj-estimator__terms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.rj-estimator__term {
+    padding: 10px 16px;
+    border: 1px solid var(--color-gray-border);
+    border-radius: 0;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 14.5px;
+    line-height: normal;
+    color: var(--color-blue-bayoux);
+    background: var(--color-athens-gray);
+    cursor: pointer;
+    transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+}
+
+.rj-estimator__term:hover {
+    border-color: var(--color-blue-bayoux);
+}
+
+.rj-estimator__term.is-active {
+    color: var(--color-black);
+    background: var(--color-white);
+}
+
+/* 280px of results plus the 1px divider that Figma draws as its own layer */
+.rj-estimator__results {
+    display: flex;
+    flex: 0 0 281px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 40px;
+    border-left: 1px solid var(--color-gray-border);
+    text-align: center;
+}
+
+.rj-estimator__payment {
+    display: flex;
+    align-items: baseline;
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 46px;
+    line-height: 46px;
+    letter-spacing: -2px;
+    color: var(--color-firefly);
+    white-space: nowrap;
+}
+
+.rj-estimator__unit {
+    font-family: var(--font-label);
+    font-weight: 500;
+    font-size: 21px;
+    line-height: 1;
+    margin-left: 6px;
+    color: var(--color-gull-gray);
+}
+
+.rj-estimator__note {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 22.4px;
+    color: var(--color-blue-bayoux);
+}
+
+/* ---- loan options ---- */
+.rj-loan-options {
+    padding-block: 88px;
+}
+
+.rj-loan-options__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 48px;
+}
+
+.rj-loan-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    height: 100%;
+    padding: 48px;
+    background: var(--color-card-dark);
+}
+
+.rj-loan-card__text {
+    margin: 0;
+    color: var(--white-85);
+}
+
+/* ---- support highlights ---- */
+.rj-support-points {
+    padding-block: 88px;
+    background: var(--color-catskill-white);
+}
+
+/* ---- faqs ---- */
+.rj-fin-faq {
+    padding-block: 88px;
+}
+
+.rj-fin-faq__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 64px;
+}
+
+.rj-fin-faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.rj-fin-faq__item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--color-gray-border);
+}
+
+.rj-fin-faq__question {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 26.25px;
+    letter-spacing: -0.4px;
+    color: var(--color-firefly);
+}
+
+.rj-fin-faq__answer {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 26.4px;
+    color: var(--color-blue-bayoux);
+}
+
+/* the local seo copy below is the shared .rj-seo-note block */
+
+/* ============================== */
+/* 13. about page starts here     */
+/* ============================== */
+
+/* ---- hero (About + Meet Team) ---- */
+.rj-company-hero {
+    --hero-scrim: linear-gradient(-19.5deg, rgba(11, 21, 38, 0.6) 25%, rgba(11, 21, 38, 0.96) 75%);
+    align-items: center;
+    min-height: 680px;
+    padding-block: 100px;
+}
+
+/* Figma shows the lower middle of a tall photo: the lot and storefront */
+.rj-crop-about-hero {
+    object-position: 50% 72%;
+}
+
+.rj-company-hero__inner {
+    gap: 32px;
+}
+
+.rj-company-hero__lead {
+    max-width: 720px;
+    color: var(--color-light-gray);
+}
+
+/* Bennington: 820px tall, the scrim runs corner to corner, brighter lead */
+.rj-company-hero--tall {
+    --hero-scrim: linear-gradient(156.87deg, rgba(11, 21, 38, 0.6) 25%, rgba(11, 21, 38, 0.96) 75%);
+    min-height: 820px;
+    padding-block: 120px;
+}
+
+.rj-company-hero__lead--bright {
+    color: var(--white-80);
+}
+
+/* Blog: 600px band, 100px above and 80px below, a flatter scrim */
+.rj-company-hero--blog {
+    --hero-scrim: linear-gradient(162.65deg, rgba(11, 21, 38, 0.933) 25%, rgba(11, 21, 38, 0.8) 75%);
+    min-height: 600px;
+    padding-top: 100px;
+    padding-bottom: 80px;
+}
+
+/* Testimonials: 600px band, content centred with 98px above and below */
+.rj-company-hero--short {
+    --hero-scrim: linear-gradient(-17.35deg, rgba(11, 21, 38, 0.6) 25%, rgba(11, 21, 38, 0.96) 75%);
+    min-height: 600px;
+    padding-block: 98px;
+}
+
+/* ---- history ---- */
+.rj-history {
+    padding-block: 100px;
+}
+
+.rj-history__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 56px;
+}
+
+.rj-timeline-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+    padding: 32px;
+    background: var(--color-catskill-white);
+}
+
+.rj-timeline-card__year {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 26px;
+    color: var(--color-milano-red);
+}
+
+.rj-timeline-card__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 26.25px;
+    letter-spacing: -0.4px;
+    color: var(--color-firefly);
+}
+
+.rj-timeline-card__text {
+    margin: 0;
+    color: var(--color-blue-bayoux);
+}
+
+/* ---- service philosophy ---- */
+.rj-about-service__copy {
+    gap: 32px;
+}
+
+.rj-about-service__title-group {
+    gap: 16px;
+}
+
+.rj-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.rj-badges__item {
+    padding: 8px 16px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: normal;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--white-12);
+}
+
+/* ---- expertise ---- */
+.rj-about-subtitle {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 23px;
+    line-height: normal;
+    letter-spacing: -0.6px;
+    text-transform: uppercase;
+    color: var(--color-white);
+}
+
+/* community, team and quality use the shared .rj-split section */
+/* the photo bands use the shared .rj-bleed block                */
+
+/* the service band shows the middle-lower part of its photo */
+.rj-crop-about-service {
+    --photo-position: 50% 64%;
+}
+
+/* ============================== */
+/* 14. meet team page starts here */
+/* ============================== */
+
+/* ---- hero ---- */
+/* uses the shared .rj-company-hero; this crop shows the lot and boats */
+.rj-crop-meet-hero {
+    object-position: 50% 65%;
+}
+
+/* ---- company culture ---- */
+.rj-culture-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 48px;
+    margin: 0;
+}
+
+.rj-culture-metrics__item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.rj-culture-metrics__value {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 26px;
+    color: var(--color-firefly);
+}
+
+.rj-culture-metrics__value--accent {
+    color: var(--color-milano-red);
+}
+
+.rj-culture-metrics__label {
+    margin: 0;
+    color: var(--color-blue-bayoux);
+}
+
+/* ---- team grid ---- */
+.rj-team-section {
+    padding-block: 100px;
+    background: var(--color-athens-gray);
+}
+
+.rj-team-section__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 56px;
+}
+
+.rj-team-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+    padding: 20px;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-mystic-light);
+}
+
+/* grey stand-in until the staff portraits are supplied */
+.rj-team-card__photo {
+    height: 220px;
+    background: var(--color-placeholder-gray);
+}
+
+.rj-team-card__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rj-team-card__name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 26px;
+    color: var(--color-firefly);
+}
+
+.rj-team-card__role {
+    margin: 0;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10px;
+    line-height: normal;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--color-milano-red);
+}
+
+.rj-team-card__bio {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 22.4px;
+    color: var(--color-blue-bayoux);
+}
+
+/* ---- get in touch ---- */
+.rj-careers {
+    padding-block: 100px;
+    background: var(--color-firefly);
+}
+
+.rj-careers__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.rj-careers__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 980px;
+}
+
+.rj-careers__text {
+    margin: 0;
+    color: var(--color-light-gray);
+}
+
+/* ============================== */
+/* 15. parts page starts here     */
+/* ============================== */
+
+/* the hero is the shared .rj-company-hero; the request form is the   */
+/* shared .rj-request block in its navy variant                        */
+
+/* ---- catalog by category ---- */
+.rj-parts-categories {
+    padding-block: 80px;
+    background: var(--color-athens-gray);
+}
+
+.rj-parts-categories__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 48px;
+}
+
+.rj-part-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: 100%;
+    padding: 24px;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-gray-border);
+}
+
+.rj-part-card__photo {
+    height: 200px;
+    overflow: hidden;
+}
+
+.rj-part-card__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.rj-part-card__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 26px;
+    color: var(--color-firefly);
+}
+
+.rj-part-card__text {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 22.4px;
+    color: var(--color-fiord-gray);
+}
+
+/* ---- authorized brands ---- */
+.rj-brand-strip {
+    padding-block: 80px;
+}
+
+.rj-brand-strip__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+.rj-brand-strip__label {
+    margin: 0;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: normal;
+    letter-spacing: 2.8px;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--color-fiord-gray);
+}
+
+.rj-brand-strip__logos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 32px 80px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.rj-brand-strip__logo {
+    display: block;
+    width: 200px;
+    height: auto;
+}
+
+/* ============================== */
+/* 16. bennington page starts here*/
+/* ============================== */
+
+/* the hero is the shared .rj-company-hero (--tall); the inventory is   */
+/* Home's .rj-inventory block with photos in the boat cards             */
+
+/* ---- overview ---- */
+/* Figma shows the left third of a very wide photo */
+.rj-crop-bennington-overview {
+    object-position: 33% 50%;
+}
+
+.rj-square-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.rj-square-list__item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 29.75px;
+    color: var(--color-firefly);
+}
+
+.rj-square-list__item::before {
+    content: "";
+    flex-shrink: 0;
+    width: 10px;
+    height: 10px;
+    background: var(--color-milano-red);
+}
+
+/* ---- series lineup ---- */
+.rj-series {
+    padding-block: 110px;
+    background: var(--color-catskill-white);
+}
+
+.rj-series__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 48px;
+}
+
+.rj-series-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: 100%;
+    padding: 24px;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-gray-border);
+}
+
+/* grey stand-in until the model photos are supplied */
+.rj-series-card__photo {
+    height: 240px;
+    background: var(--color-placeholder-gray);
+}
+
+.rj-series-card__photo--tall {
+    height: 320px;
+}
+
+.rj-series-card__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 26.25px;
+    letter-spacing: -0.4px;
+    color: var(--color-firefly);
+}
+
+.rj-series-card__text {
+    margin: 0;
+    color: var(--color-blue-bayoux);
+}
+
+/* ---- lifestyle break ---- */
+.rj-lifestyle {
+    --hero-scrim: linear-gradient(-18.43deg, rgba(11, 21, 38, 0.6) 25%, rgba(11, 21, 38, 0.96) 75%);
+    align-items: flex-start;
+    min-height: 640px;
+    padding-block: 120px;
+}
+
+/* the photo hangs from the top edge of the band */
+.rj-crop-lifestyle {
+    object-position: 50% 0;
+}
+
+.rj-lifestyle__title {
+    max-width: 1080px;
+}
+
+.rj-lifestyle__lead {
+    max-width: 720px;
+    color: var(--white-80);
+}
+
+/* the local seo copy below is the shared .rj-seo-note block */
+
+/* ============================== */
+/* 17. testimonials page starts   */
+/* ============================== */
+
+/* ---- hero ---- */
+/* the hero is the shared .rj-company-hero (--short) */
+.rj-rating {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 24px;
+}
+
+.rj-rating__score {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(34px, 2.396vw, 46px);
+    line-height: 1;
+    letter-spacing: -0.04348em;
+    white-space: nowrap;
+    color: var(--color-white);
+}
+
+.rj-rating__text {
+    margin: 0;
+    color: var(--white-75);
+}
+
+/* ---- reviews ---- */
+.rj-reviews {
+    padding-block: 100px;
+    background: var(--color-catskill-white);
+}
+
+.rj-review-card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 0;
+    padding: 32px;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-gray-border);
+}
+
+.rj-review-card__stars {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 26px;
+    letter-spacing: 6px;
+    white-space: nowrap;
+    color: var(--color-milano-red);
+}
+
+.rj-review-card__quote {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 26.4px;
+    color: var(--color-firefly);
+}
+
+.rj-review-card__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+}
+
+.rj-review-card__name {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14.5px;
+    line-height: normal;
+    color: var(--color-firefly);
+}
+
+.rj-review-card__badge {
+    padding: 4px 8px;
+    font-family: var(--font-label);
+    font-size: 11px;
+    line-height: normal;
+    letter-spacing: 0.6px;
+    color: var(--color-white);
+    background: var(--color-firefly);
+}
+
+/* ============================== */
+/* 18. faqs page starts here      */
+/* ============================== */
+
+/* the hero is the shared .rj-company-hero (--short) */
+
+/* ---- category filters ---- */
+/* the pills are 35px tall, so 22.5px above and below makes the 80px band */
+.rj-faq-filters {
+    padding-block: 22.5px;
+    background: var(--color-catskill-white);
+}
+
+.rj-faq-filters__bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.rj-faq-filters__pill {
+    padding: 12px 20px;
+    border: 0;
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 10.5px;
+    line-height: normal;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-firefly);
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-mystic);
+    cursor: pointer;
+    transition: background-color .25s ease, color .25s ease, box-shadow .25s ease;
+}
+
+.rj-faq-filters__pill:hover {
+    box-shadow: inset 0 0 0 1px var(--color-firefly);
+}
+
+.rj-faq-filters__pill.is-active {
+    color: var(--color-white);
+    background: var(--color-firefly);
+    box-shadow: none;
+}
+
+.rj-faq-filters__pill:focus-visible,
+.rj-faq-item__question:focus-visible {
+    outline: 2px solid var(--color-venice-blue);
+    outline-offset: 2px;
+}
+
+/* ---- questions ---- */
+.rj-faq-list {
+    padding-block: 100px;
+    background: var(--color-white);
+}
+
+.rj-faq-list__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+}
+
+.rj-faq-group {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.rj-faq-group__title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 22px;
+    line-height: normal;
+    color: var(--color-firefly);
+}
+
+.rj-faq-group__title::before {
+    content: "";
+    flex-shrink: 0;
+    width: 4px;
+    height: 24px;
+    background: var(--color-milano-red);
+}
+
+.rj-faq-group__items {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.rj-faq-item {
+    padding: 24px;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-gray-border);
+}
+
+.rj-faq-item__heading {
+    margin: 0;
+}
+
+.rj-faq-item__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14.5px;
+    line-height: normal;
+    text-align: left;
+    color: var(--color-firefly);
+    background: none;
+    cursor: pointer;
+}
+
+.rj-faq-item__sign {
+    flex-shrink: 0;
+    min-width: 4px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 2.6px;
+    color: var(--color-milano-red);
+}
+
+.rj-faq-item__sign::before {
+    content: "+";
+}
+
+.rj-faq-item__question[aria-expanded="true"] .rj-faq-item__sign::before {
+    content: "-";
+}
+
+.rj-faq-item__answer {
+    padding-top: 12px;
+}
+
+.rj-faq-item__answer p {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 26.4px;
+    color: var(--color-blue-bayoux);
+}
+
+.rj-faq-list__empty {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 26.4px;
+    color: var(--color-blue-bayoux);
+}
+
+.rj-faq-list__empty a {
+    color: var(--color-milano-red);
+}
+
+/* ============================== */
+/* 19. blog page starts here      */
+/* ============================== */
+
+/* the hero is the shared .rj-company-hero (--blog) */
+
+/* ---- category bar ---- */
+.rj-blog-filters {
+    padding-block: 24px;
+    background: var(--color-catskill-white);
+    box-shadow: inset 0 -1px 0 var(--color-mystic-light);
+}
+
+.rj-blog-filters__bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+}
+
+.rj-blog-filters__pill {
+    height: 32px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 20px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: normal;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-firefly);
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-mystic-light);
+    cursor: pointer;
+    transition: background-color .25s ease, color .25s ease, box-shadow .25s ease;
+}
+
+.rj-blog-filters__pill:hover {
+    box-shadow: inset 0 0 0 1px var(--color-firefly);
+}
+
+.rj-blog-filters__pill.is-active {
+    color: var(--color-white);
+    background: var(--color-firefly);
+    box-shadow: none;
+}
+
+.rj-blog-filters__pill:focus-visible {
+    outline: 2px solid var(--color-venice-blue);
+    outline-offset: 2px;
+}
+
+/* ---- featured article ---- */
+/* the section is the shared .rj-split-section; this tightens the copy */
+.rj-blog-featured__copy {
+    gap: 20px;
+    justify-content: center;
+}
+
+.rj-blog-featured__badge {
+    margin: 0;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: normal;
+    letter-spacing: 2.8px;
+    text-transform: uppercase;
+    color: var(--color-white);
+    background: var(--color-milano-red);
+}
+
+/* ---- latest articles ---- */
+.rj-blog-grid {
+    padding-block: 100px;
+    box-shadow: inset 0 1px 0 var(--color-mystic-light);
+}
+
+.rj-blog-grid__title {
+    margin-bottom: 48px;
+}
+
+.rj-post-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+    background: var(--color-white);
+    box-shadow: inset 0 0 0 1px var(--color-mystic-light);
+}
+
+.rj-post-card__photo {
+    height: 220px;
+    overflow: hidden;
+}
+
+.rj-post-card__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.rj-post-card__meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    line-height: normal;
+}
+
+.rj-post-card__category {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 2.8px;
+    text-transform: uppercase;
+    color: var(--color-milano-red);
+}
+
+.rj-post-card__date {
+    flex-shrink: 0;
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    color: var(--color-blue-bayoux);
+}
+
+/* titles and excerpts reserve two lines, so every card's link lines up */
+.rj-post-card__title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    min-height: 52px;
+    margin: 0;
+    overflow: hidden;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 26px;
+    color: var(--color-firefly);
+}
+
+.rj-post-card__excerpt {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    min-height: 44.8px;
+    margin: 0;
+    overflow: hidden;
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 22.4px;
+    color: var(--color-blue-bayoux);
+}
+
+.rj-post-card__link {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: 4px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14.5px;
+    line-height: normal;
+    color: var(--color-milano-red);
+    transition: color .25s ease;
+}
+
+.rj-post-card__link:hover {
+    color: var(--color-signal-red);
+}
+
+/* ============================== */
+/* 20. blog post page starts here */
+/* ============================== */
+
+/* ---- article header ---- */
+.rj-article-header {
+    padding-block: 40px 48px;
+}
+
+.rj-article-header__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.rj-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    line-height: normal;
+    color: var(--color-fiord-gray);
+}
+
+.rj-breadcrumbs a {
+    color: inherit;
+}
+
+.rj-breadcrumbs a:hover {
+    color: var(--color-signal-red);
+}
+
+.rj-breadcrumbs__item + .rj-breadcrumbs__item::before {
+    content: "/";
+    margin-right: 8px;
+    font-size: 12.5px;
+    font-weight: 400;
+    color: var(--color-fiord-gray);
+}
+
+.rj-breadcrumbs__item--current {
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--color-signal-red);
+}
+
+/* Figma's 1px tag outline sits inside the 27px box */
+.rj-article-header__tag {
+    margin: 0;
+    padding: 8px 12px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 10.5px;
+    line-height: normal;
+    letter-spacing: 2.8px;
+    text-transform: uppercase;
+    color: var(--color-signal-red);
+    box-shadow: inset 0 0 0 1px var(--color-signal-red);
+}
+
+.rj-article-header__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 24px;
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 29.75px;
+    color: var(--color-fiord-gray);
+}
+
+/* the 1px divider that leads the byline */
+.rj-article-header__meta::before {
+    content: "";
+    flex-shrink: 0;
+    width: 1px;
+    height: 40px;
+    background: var(--color-gray-border);
+}
+
+/* ---- images ---- */
+.rj-article-image {
+    margin: 0;
+    overflow: hidden;
+}
+
+.rj-article-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.rj-article-image--lead {
+    aspect-ratio: 1440 / 600;
+    max-height: 600px;
+}
+
+.rj-article-image--inline {
+    aspect-ratio: 960 / 400;
+    max-height: 400px;
+}
+
+/* ---- article body ---- */
+.rj-article-body {
+    padding-block: 80px 100px;
+}
+
+.rj-article-body__layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 80px;
+}
+
+.rj-article {
+    display: flex;
+    flex: 0 1 960px;
+    flex-direction: column;
+    gap: 32px;
+    min-width: 0;
+}
+
+.rj-article__intro {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 26px;
+    color: var(--color-firefly);
+}
+
+.rj-article__text {
+    margin: 0;
+    color: var(--color-fiord-gray);
+}
+
+.rj-callout {
+    padding: 24px;
+    border-radius: 0 8px 8px 0;
+    background: var(--color-athens-gray);
+    box-shadow: inset 4px 0 0 var(--color-signal-red);
+}
+
+.rj-callout__title {
+    margin: 0 0 12px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14.5px;
+    line-height: normal;
+    color: var(--color-firefly);
+}
+
+.rj-callout__text {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 22.4px;
+    color: var(--color-fiord-gray);
+}
+
+/* ---- sidebar call to action ---- */
+.rj-help-cta {
+    display: flex;
+    flex: 0 0 400px;
+    flex-direction: column;
+    gap: 24px;
+    padding: 32px;
+    background: var(--color-firefly);
+}
+
+.rj-help-cta__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 26px;
+    line-height: normal;
+    letter-spacing: -0.8px;
+    color: var(--color-white);
+}
+
+.rj-help-cta__text {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 22.4px;
+    color: var(--color-athens-gray);
+    opacity: 0.8;
+}
+
+/* Figma's full-width button keeps its label at the left */
+.rj-help-cta__button {
+    justify-content: flex-start;
+}
+
+/* =================================================================
+   RESPONSIVE — one block per breakpoint, largest → smallest.
+   Never open a second @media for a breakpoint that already exists;
+   append a "---- Section name ----" group inside the existing one.
+   ================================================================= */
+
+@media (max-width: 1200px) {
+
+    /* ---- Header / nav ---- */
+    .rj-topbar__tagline {
+        display: none;
+    }
+
+    .rj-navbar__logo img {
+        width: 300px;
+    }
+
+    .rj-nav {
+        gap: 32px;
+    }
+
+    .rj-nav__link {
+        font-size: 18px;
+    }
+
+    /* ---- Footer ---- */
+    .rj-footer__columns {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .rj-footer__brand {
+        grid-column: 1 / -1;
+    }
+
+    /* ---- Contact page ---- */
+    /* below here the hero outgrows the zoomed crop, so use a plain cover */
+    .rj-crop-contact-hero {
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        transform: none;
+        object-position: 20% 45%;
+    }
+
+    /* ---- Financing page ---- */
+    .rj-fin-columns {
+        gap: 64px;
+    }
+
+    .rj-fin-columns__aside {
+        flex-basis: 400px;
+    }
+
+    /* ---- Mega menu ---- */
+    .rj-mega__body {
+        column-gap: 48px;
+    }
+
+    .rj-mega-tile {
+        padding: 18px;
+    }
+
+    .rj-mega-tile__title {
+        font-size: 20px;
+        line-height: 22px;
+    }
+}
+
+@media (max-width: 991px) {
+
+    /* ---- Global ---- */
+    :root {
+        --navbar-height: 76px;
+    }
+
+    /* ---- Header / nav ---- */
+    .rj-nav {
+        display: none;
+    }
+
+    .rj-burger {
+        display: flex;
+    }
+
+    .rj-navbar__inner {
+        justify-content: space-between;
+    }
+
+    .rj-navbar__logo {
+        padding-block: 12px;
+    }
+
+    .rj-navbar__logo img {
+        width: 220px;
+    }
+
+    /* ---- Footer ---- */
+    .rj-newsletter {
+        padding-block: 56px;
+    }
+
+    .rj-newsletter__inner {
+        flex-direction: column;
+        gap: 32px;
+    }
+
+    .rj-newsletter__intro {
+        flex-basis: auto;
+        width: 100%;
+    }
+
+    .rj-newsletter__form {
+        width: 100%;
+    }
+
+    .rj-footer__main {
+        padding-top: 64px;
+    }
+
+    .rj-footer__columns {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .rj-footer__bottom {
+        margin-top: 40px;
+    }
+
+    /* ---- Home page ---- */
+    .rj-hero {
+        min-height: 680px;
+        padding-bottom: 56px;
+    }
+
+    .rj-hero__background,
+    .rj-hero::before {
+        height: 100%;
+    }
+
+    .rj-hero__footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .rj-categories {
+        padding-top: 80px;
+    }
+
+    .rj-category-card {
+        min-height: 340px;
+    }
+
+    .rj-category-card__content {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-block: 48px;
+    }
+
+    .rj-brands__header {
+        padding-block: 64px;
+    }
+
+    .rj-brand-tile {
+        height: auto;
+        min-height: 300px;
+        padding: 40px 32px;
+    }
+
+    .rj-brand-tile__description {
+        padding-bottom: 28px;
+    }
+
+    .rj-inventory {
+        padding-block: 80px;
+    }
+
+    .rj-service {
+        min-height: 0;
+        padding-block: 64px;
+    }
+
+    /* text now spans the full width, so the photo needs an even scrim */
+    .rj-service::before {
+        background: linear-gradient(rgba(11, 21, 38, 0.8), rgba(11, 21, 38, 0.94));
+    }
+
+    .rj-service__content {
+        width: 100%;
+    }
+
+    .rj-family {
+        padding-block: 80px;
+    }
+
+    .rj-family__story {
+        margin-top: 40px;
+    }
+
+    .rj-financing {
+        padding-block: 80px;
+    }
+
+    .rj-steps {
+        margin-top: 48px;
+    }
+
+    .rj-blog {
+        padding-block: 80px;
+    }
+
+    .rj-social {
+        padding-block: 64px;
+    }
+
+    /* ---- Sell / Trade page ---- */
+    .rj-sell-hero {
+        min-height: 640px;
+        padding-block: 88px;
+    }
+
+    .rj-process,
+    .rj-advantages,
+    .rj-request {
+        padding-block: 80px;
+    }
+
+    .rj-why {
+        padding-bottom: 80px;
+    }
+
+    .rj-directory {
+        padding-block: 64px;
+    }
+
+    .rj-request__layout {
+        flex-direction: column;
+        gap: 48px;
+    }
+
+    .rj-request__intro {
+        flex-basis: auto;
+        width: 100%;
+    }
+
+    .rj-request__form {
+        width: 100%;
+    }
+
+    /* ---- Parts page ---- */
+    .rj-request__intro--wide,
+    .rj-request__form--flush {
+        flex: 0 0 auto;
+    }
+
+    /* ---- Schedule Demo page ---- */
+    .rj-demo-hero {
+        min-height: 0;
+        padding-block: 56px;
+    }
+
+    .rj-demo,
+    .rj-demo-faq {
+        padding-block: 80px;
+    }
+
+    .rj-demo__layout {
+        flex-direction: column;
+        gap: 64px;
+    }
+
+    .rj-form-column,
+    .rj-demo__expectations {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+
+    .rj-metrics {
+        padding-block: 64px;
+    }
+
+    .rj-metrics__list {
+        gap: 32px 56px;
+    }
+
+    /* ---- Contact page ---- */
+    .rj-contact-hero {
+        min-height: 0;
+        padding-block: 88px;
+    }
+
+    .rj-contact,
+    .rj-directions {
+        padding-block: 80px;
+    }
+
+    .rj-contact__layout,
+    .rj-directions__layout {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 64px;
+    }
+
+    .rj-contact__details,
+    .rj-directions__map,
+    .rj-directions__content {
+        flex: 0 0 auto;
+    }
+
+    .rj-visit {
+        padding-block: 88px;
+    }
+
+    .rj-resource-guide {
+        padding-block: 64px;
+    }
+
+    /* ---- Service Center page ---- */
+    .rj-service-hero {
+        min-height: 0;
+        padding-block: 80px;
+    }
+
+    .rj-services,
+    .rj-values,
+    .rj-workflow {
+        padding-block: 80px;
+    }
+
+    .rj-values__layout {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 48px;
+    }
+
+    /* image first, text below, when the two stack */
+    .rj-values__photo {
+        order: -1;
+        flex: 0 0 auto;
+        height: 360px;
+    }
+
+    .rj-values__copy {
+        flex: 0 0 auto;
+    }
+
+    .rj-seo-note {
+        padding-block: 64px;
+    }
+
+    /* ---- Repower page ---- */
+    .rj-repower-hero {
+        min-height: 0;
+        padding-block: 80px;
+    }
+
+    .rj-split-section,
+    .rj-benefits,
+    .rj-showcase {
+        padding-block: 80px;
+    }
+
+    .rj-split {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 48px;
+    }
+
+    /* photo first, text below, when the two stack */
+    .rj-split__photo {
+        order: -1;
+        flex: 0 0 auto;
+        height: 360px;
+    }
+
+    .rj-split__copy {
+        flex: 0 0 auto;
+    }
+
+    /* ---- Financing page ---- */
+    .rj-fin-hero__main,
+    .rj-fin-hero__support,
+    .rj-estimator-section,
+    .rj-loan-options,
+    .rj-support-points,
+    .rj-fin-faq {
+        padding-block: 80px;
+    }
+
+    .rj-fin-columns {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 48px;
+    }
+
+    .rj-fin-columns__aside,
+    .rj-fin-columns__main {
+        flex: 0 0 auto;
+    }
+
+    .rj-loan-card {
+        padding: 40px;
+    }
+
+    .rj-fin-faq__intro {
+        margin-bottom: 48px;
+    }
+
+    /* ---- About page ---- */
+    .rj-company-hero {
+        min-height: 0;
+        padding-block: 80px;
+    }
+
+    .rj-history {
+        padding-block: 80px;
+    }
+
+    .rj-split__photo--short,
+    .rj-split__photo--medium,
+    .rj-split__photo--banner {
+        height: 360px;
+    }
+
+    /* ---- Meet Team page ---- */
+    .rj-team-section,
+    .rj-careers {
+        padding-block: 80px;
+    }
+
+    .rj-careers__inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 32px;
+    }
+
+    /* ---- Bennington page ---- */
+    .rj-series {
+        padding-block: 80px;
+    }
+
+    .rj-lifestyle {
+        min-height: 0;
+        padding-block: 80px;
+    }
+
+    /* ---- Testimonials page ---- */
+    .rj-reviews {
+        padding-block: 80px;
+    }
+
+    /* ---- FAQs page ---- */
+    .rj-faq-list {
+        padding-block: 80px;
+    }
+
+    .rj-faq-list__inner {
+        gap: 64px;
+    }
+
+    /* ---- Blog page ---- */
+    .rj-blog-grid {
+        padding-block: 80px;
+    }
+
+    /* ---- Blog Post page ---- */
+    .rj-article-body {
+        padding-block: 64px 80px;
+    }
+
+    .rj-article-body__layout {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 48px;
+    }
+
+    .rj-article,
+    .rj-help-cta {
+        flex: 0 0 auto;
+    }
+}
+
+@media (max-width: 768px) {
+
+    /* ---- Global ---- */
+    :root {
+        --topbar-height: 44px;
+    }
+
+    /* ---- Header / nav ---- */
+    .rj-topbar__location {
+        display: none;
+    }
+
+    .rj-topbar__inner {
+        justify-content: flex-end;
+    }
+
+    .rj-topbar__social-link {
+        width: 44px;
+        height: 44px;
+    }
+
+    /* ---- Footer ---- */
+    .rj-footer__bottom {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* ---- Sell / Trade page ---- */
+    .rj-why__photo {
+        aspect-ratio: 4 / 3;
+    }
+
+    .rj-process-card {
+        padding: 32px;
+    }
+
+    .rj-request__form {
+        padding: 32px;
+    }
+
+    /* ---- Service Center page ---- */
+    /* the thin desktop band becomes a proper photo, uncropped by the zoom */
+    .rj-bleed {
+        aspect-ratio: 4 / 3;
+    }
+
+    .rj-bleed__photo--zoomed {
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        transform: none;
+        object-position: 30% 50%;
+    }
+
+    /* ---- Financing page ---- */
+    .rj-estimator {
+        flex-direction: column;
+    }
+
+    .rj-estimator__results {
+        flex: 0 0 auto;
+        border-top: 1px solid var(--color-gray-border);
+        border-left: 0;
+    }
+
+    /* ---- About page ---- */
+    .rj-bleed--feature {
+        --bleed-aspect: 16 / 9;
+    }
+}
+
+@media (max-width: 576px) {
+
+    /* ---- Global ---- */
+    :root {
+        --navbar-height: 68px;
+    }
+
+    /* the 40px grid gutter would pull its row 4px past the 16px page     */
+    /* padding; at this width its cards are a single column anyway      */
+    .rj-row-gap-40 {
+        margin-inline: 0;
+    }
+
+    .rj-row-gap-40 > [class*="col-"] {
+        padding-inline: 0;
+    }
+
+    /* ---- Header / nav ---- */
+    .rj-navbar__logo img {
+        width: 180px;
+    }
+
+    /* ---- Footer ---- */
+    .rj-newsletter {
+        padding-block: 48px;
+    }
+
+    .rj-newsletter__form {
+        flex-direction: column;
+    }
+
+    .rj-newsletter__input {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+
+    .rj-footer__main {
+        padding-top: 48px;
+    }
+
+    .rj-footer__columns {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* ---- Home page ---- */
+    .rj-hero {
+        min-height: 600px;
+        padding-bottom: 40px;
+    }
+
+    .rj-hero__actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .rj-hero__button {
+        width: 100%;
+    }
+
+    .rj-categories {
+        padding-top: 64px;
+    }
+
+    .rj-categories__list {
+        margin-top: 32px;
+    }
+
+    .rj-category-card {
+        min-height: 300px;
+    }
+
+    .rj-category-card__content {
+        padding-block: 40px;
+    }
+
+    .rj-brands__header {
+        padding-block: 48px;
+    }
+
+    .rj-brand-tile {
+        padding: 32px 24px;
+    }
+
+    .rj-brand-tile__description {
+        padding-bottom: 20px;
+    }
+
+    .rj-inventory {
+        padding-block: 64px;
+    }
+
+    .rj-inventory__button {
+        width: 100%;
+    }
+
+    .rj-inventory__list {
+        margin-top: 32px;
+    }
+
+    .rj-service {
+        padding-block: 48px;
+    }
+
+    .rj-family {
+        padding-block: 64px;
+    }
+
+    .rj-family__stats {
+        margin-inline: -6px;
+    }
+
+    .rj-family__stats > [class*="col-"] {
+        padding-inline: 6px;
+    }
+
+    .rj-financing {
+        padding-block: 64px;
+    }
+
+    .rj-step {
+        gap: 16px;
+    }
+
+    .rj-blog {
+        padding-block: 64px;
+    }
+
+    .rj-blog__list {
+        margin-top: 32px;
+    }
+
+    .rj-social {
+        padding-block: 48px;
+    }
+
+    /* ---- Sell / Trade page ---- */
+    .rj-sell-hero {
+        min-height: 0;
+        padding-block: 56px;
+    }
+
+    .rj-sell-hero__actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .rj-sell-hero__actions .rj-button,
+    .rj-why__summary .rj-button {
+        width: 100%;
+    }
+
+    .rj-section-intro {
+        margin-bottom: 32px;
+    }
+
+    .rj-process,
+    .rj-advantages,
+    .rj-request {
+        padding-block: 64px;
+    }
+
+    .rj-why {
+        padding-bottom: 64px;
+    }
+
+    .rj-process-card {
+        gap: 28px;
+        padding: 24px;
+    }
+
+    .rj-advantage-card,
+    .rj-contact-card {
+        padding: 24px;
+    }
+
+    .rj-request__form {
+        padding: 24px;
+    }
+
+    .rj-directory {
+        padding-block: 48px;
+    }
+
+    /* ---- Schedule Demo page ---- */
+    .rj-demo,
+    .rj-demo-faq {
+        padding-block: 64px;
+    }
+
+    .rj-form-card {
+        padding: 24px;
+    }
+
+    .rj-form-card__fields {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .rj-faq-card {
+        padding: 24px;
+    }
+
+    .rj-metrics {
+        padding-block: 48px;
+    }
+
+    .rj-metrics__list {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* ---- Contact page ---- */
+    .rj-contact-hero {
+        padding-block: 56px;
+    }
+
+    .rj-contact,
+    .rj-directions {
+        padding-block: 64px;
+    }
+
+    .rj-contact__layout,
+    .rj-directions__layout {
+        gap: 48px;
+    }
+
+    .rj-hours-card {
+        padding: 24px;
+    }
+
+    .rj-hours-card__row {
+        flex-wrap: wrap;
+        gap: 0 24px;
+    }
+
+    .rj-directions__map {
+        height: auto;
+        aspect-ratio: 4 / 3;
+    }
+
+    .rj-visit {
+        padding-block: 64px;
+    }
+
+    .rj-visit__header {
+        margin-bottom: 40px;
+    }
+
+    .rj-resource-guide {
+        padding-block: 48px;
+    }
+
+    /* ---- Service Center page ---- */
+    .rj-service-hero {
+        padding-block: 56px;
+    }
+
+    .rj-service-hero__actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .rj-service-hero__actions .rj-button,
+    .rj-services__cta .rj-button,
+    .rj-values__copy .rj-button,
+    .rj-promo-banner .rj-button {
+        width: 100%;
+    }
+
+    .rj-services__cta {
+        margin-top: 32px;
+    }
+
+    .rj-services,
+    .rj-values,
+    .rj-workflow {
+        padding-block: 64px;
+    }
+
+    .rj-values__photo {
+        height: 260px;
+    }
+
+    .rj-service-card,
+    .rj-workflow-card {
+        min-height: 0;
+        padding: 24px;
+    }
+
+    .rj-promo-banner {
+        padding-block: 40px;
+    }
+
+    .rj-seo-note {
+        padding-block: 48px;
+    }
+
+    /* ---- Repower page ---- */
+    .rj-repower-hero {
+        padding-block: 56px;
+    }
+
+    .rj-repower-hero__inner > .rj-button,
+    .rj-split__copy > .rj-button {
+        width: 100%;
+    }
+
+    .rj-split-section,
+    .rj-benefits,
+    .rj-showcase {
+        padding-block: 64px;
+    }
+
+    .rj-split__photo {
+        height: 260px;
+    }
+
+    .rj-benefit-card,
+    .rj-showcase-card {
+        min-height: 0;
+    }
+
+    .rj-showcase-card__photo {
+        height: 220px;
+    }
+
+    .rj-bleed__logo {
+        max-width: 70%;
+    }
+
+    /* ---- Financing page ---- */
+    /* a min-height would be carried through the aspect-ratio into a min-width */
+    .rj-fin-hero__photo {
+        aspect-ratio: auto;
+        height: 220px;
+    }
+
+    .rj-fin-hero__main,
+    .rj-fin-hero__support,
+    .rj-estimator-section,
+    .rj-loan-options,
+    .rj-support-points,
+    .rj-fin-faq {
+        padding-block: 64px;
+    }
+
+    .rj-fin-hero__actions {
+        flex-direction: column;
+        align-self: stretch;
+    }
+
+    .rj-fin-hero__actions .rj-button,
+    .rj-loan-card .rj-button {
+        width: 100%;
+    }
+
+    .rj-estimator__controls,
+    .rj-estimator__results {
+        padding: 24px;
+    }
+
+    .rj-loan-card {
+        padding: 32px;
+    }
+
+    .rj-fin-faq__intro {
+        margin-bottom: 40px;
+    }
+
+    /* ---- About page ---- */
+    .rj-company-hero {
+        padding-block: 56px;
+    }
+
+    .rj-company-hero__inner > .rj-button {
+        width: 100%;
+    }
+
+    .rj-history {
+        padding-block: 64px;
+    }
+
+    .rj-history__intro {
+        margin-bottom: 40px;
+    }
+
+    .rj-timeline-card {
+        padding: 24px;
+    }
+
+    .rj-split__photo--short,
+    .rj-split__photo--medium,
+    .rj-split__photo--banner {
+        height: 260px;
+    }
+
+    .rj-bleed--feature {
+        --bleed-aspect: 4 / 3;
+    }
+
+    /* ---- Meet Team page ---- */
+    .rj-team-section,
+    .rj-careers {
+        padding-block: 64px;
+    }
+
+    .rj-team-section__intro {
+        margin-bottom: 40px;
+    }
+
+    .rj-culture-metrics {
+        column-gap: 32px;
+    }
+
+    .rj-careers__inner > .rj-button {
+        width: 100%;
+    }
+
+    /* ---- Parts page ---- */
+    .rj-parts-categories,
+    .rj-brand-strip {
+        padding-block: 64px;
+    }
+
+    .rj-parts-categories__intro {
+        margin-bottom: 40px;
+    }
+
+    .rj-brand-strip__logos {
+        gap: 28px 40px;
+    }
+
+    .rj-brand-strip__logo {
+        width: 140px;
+    }
+
+    /* ---- Bennington page ---- */
+    .rj-series {
+        padding-block: 64px;
+    }
+
+    .rj-series__intro {
+        margin-bottom: 40px;
+    }
+
+    .rj-series-card {
+        padding: 20px;
+    }
+
+    .rj-series-card__photo {
+        height: 180px;
+    }
+
+    .rj-series-card__photo--tall {
+        height: 220px;
+    }
+
+    .rj-lifestyle {
+        padding-block: 56px;
+    }
+
+    /* ---- Testimonials page ---- */
+    .rj-reviews {
+        padding-block: 64px;
+    }
+
+    .rj-review-card {
+        padding: 24px;
+    }
+
+    /* ---- FAQs page ---- */
+    .rj-faq-list {
+        padding-block: 64px;
+    }
+
+    .rj-faq-list__inner {
+        gap: 48px;
+    }
+
+    .rj-faq-group {
+        gap: 28px;
+    }
+
+    .rj-faq-item {
+        padding: 20px;
+    }
+
+    /* ---- Blog page ---- */
+    .rj-blog-grid {
+        padding-block: 64px;
+    }
+
+    .rj-blog-grid__title {
+        margin-bottom: 32px;
+    }
+
+    .rj-post-card {
+        padding: 20px;
+    }
+
+    .rj-post-card__photo {
+        height: 180px;
+    }
+
+    .rj-blog-filters__bar {
+        gap: 12px;
+    }
+
+    /* ---- Blog Post page ---- */
+    .rj-article-header {
+        padding-block: 28px 32px;
+    }
+
+    .rj-article-body {
+        padding-block: 48px 64px;
+    }
+
+    .rj-article-header__meta {
+        font-size: 15px;
+        line-height: 26px;
+    }
+
+    .rj-article-image--lead,
+    .rj-article-image--inline {
+        aspect-ratio: auto;
+        height: 220px;
+    }
+
+    .rj-article__intro {
+        font-size: 22px;
+        line-height: 26px;
+    }
+
+    .rj-callout,
+    .rj-help-cta {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 400px) {
+
+    /* ---- Global ---- */
+    /* the longest heading word ("transformations") is 332px at the 32px floor */
+    .rj-heading {
+        font-size: 26px;
+    }
+
+    /* ---- Header / nav ---- */
+    .rj-navbar__logo img {
+        width: 160px;
+    }
+
+    /* ---- Footer ---- */
+    .rj-footer__columns {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* ---- Home page ---- */
+    .rj-service__features {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .rj-service__feature:nth-child(even) {
+        padding-left: 0;
+    }
+
+    .rj-service__feature:nth-child(n+3) {
+        border-bottom: 0;
+    }
+
+    .rj-service__feature:last-child {
+        border-bottom: 1px solid var(--white-20);
+    }
+
+    /* ---- Financing page ---- */
+    .rj-loan-card {
+        padding: 24px;
+    }
+
+    .rj-estimator__payment {
+        font-size: 40px;
+        line-height: 40px;
+    }
+
+    .rj-estimator__unit {
+        font-size: 18px;
+    }
+}
