@@ -277,9 +277,20 @@ Take every value from Figma. These are the building blocks:
 - **Buttons** — `.rj-button` is the base (height, font, tracking, uppercase, square corners) plus one fill modifier. Set widths per instance only when Figma fixes them; otherwise let the label and padding decide.
 - **Container** — `.rj-container` holds the page gutter. At 1920 it reproduces Figma's side gutters; below that it shrinks fluidly (§7.3). The header and hero use a narrower variant (`.rj-container--narrow`) only if Figma's gutters differ.
 
-### 6.1 Cursor on icons and images
+### 6.1 Cursor on icons, images and headings
 
-Every `<img>`, icon (`<i class="fa-...">`, inline `<svg>`) and media wrapper gets `cursor: pointer`, even when not wrapped in a link. It is written **once**, in the common region. When you add a new media wrapper, add its class to that selector list rather than writing another `cursor: pointer` elsewhere.
+Every heading (`<h1>`–`<h6>`), `<img>`, icon (`<i class="fa-...">`, inline `<svg>`) and media wrapper gets `cursor: pointer`, even when not wrapped in a link. It is written **once**, in the common region. When you add a new media wrapper, add its class to that selector list rather than writing another `cursor: pointer` elsewhere.
+
+### 6.1.1 One CTA per block
+
+If a card or section holds an image, a heading and a button/link, and any one of them is the CTA, **all of them fire the same CTA**:
+
+- The button/link keeps its `href`.
+- The heading text is wrapped: `<h2 class="rj-heading"><a href="SAME-HREF">Title</a></h2>`.
+- The photo is wrapped: `<a class="rj-cta-media" href="SAME-HREF" tabindex="-1" aria-hidden="true"><img …></a>` (inside the photo wrapper when there is one). `.rj-cta-media` is `display: contents`, so it adds no box and changes no layout. The image link is hidden from keyboard and screen readers because the heading link already covers them.
+- A card that is already one big `<a>` (boat, blog, category, brand cards) needs nothing extra.
+- Decorative background images (hero, full-width bands) stay unlinked; they still get the pointer cursor from the shared rule.
+- A block with two or more different CTAs (e.g. a hero with "Shop" and "Book service") has no single action, so its heading and image stay unlinked.
 
 ### 6.2 Buttons in a flex column
 
@@ -557,7 +568,8 @@ Build order for the page: **shared head → header + mega menus + mobile drawer 
 - [ ] Colours and fonts come from `:root` tokens, not literals.
 - [ ] Repeating items use the Bootstrap grid.
 - [ ] Every `@media` is inside the single `RESPONSIVE` block, and no breakpoint is opened twice.
-- [ ] Icons, images and media wrappers get `cursor: pointer` via the shared selector list.
+- [ ] Headings, icons, images and media wrappers get `cursor: pointer` via the shared selector list.
+- [ ] In every card/section with a single CTA, the image and heading link to the same `href` as the button (§6.1.1).
 - [ ] Sliders use Owl Carousel; JS is in its own labelled, `.length`-guarded region.
 
 **Content & quality**

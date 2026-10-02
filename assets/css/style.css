@@ -157,14 +157,43 @@ input:focus-visible {
     outline-offset: 3px;
 }
 
-/* ---- icons & images always read as clickable ---- */
+/* ---- icons, images and headings always read as clickable ---- */
 /* Applies even with no link and no click handler. Add every new     */
 /* media-wrapper class here — never a one-off cursor: pointer.       */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
 img,
 svg,
 i[class*="fa-"],
-.rj-boat-card__photo {
+.rj-article-image,
+.rj-bleed,
+.rj-blog-card__photo,
+.rj-boat-card__photo,
+.rj-directions__map,
+.rj-fin-hero__photo,
+.rj-part-card__photo,
+.rj-post-card__photo,
+.rj-series-card__photo,
+.rj-showcase-card__photo,
+.rj-split__photo,
+.rj-team-card__photo,
+.rj-values__photo,
+.rj-visit-card__photo,
+.rj-why__photo {
     cursor: pointer;
+}
+
+/* ---- image link that adds no box of its own ---- */
+/* Wraps a photo (or the image inside a photo wrapper) so it fires the */
+/* same CTA as the block's heading and button. display: contents      */
+/* keeps every sizing and cropping rule on the wrapper and the img    */
+/* exactly as it was before the link existed.                         */
+.rj-cta-media {
+    display: contents;
 }
 
 /* ---- container ---- */
@@ -521,13 +550,13 @@ i[class*="fa-"],
     align-items: center;
     justify-content: center;
     padding: 18px 32px;
-        font-family: var(--font-display);
+    font-family: var(--font-display);
     font-weight: 600;
     font-size: 13px;
     line-height: 16px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    white-space: nowrap;
+    text-align: center;
     transition: background-color .25s ease, color .25s ease, border-color .25s ease;
 }
 
