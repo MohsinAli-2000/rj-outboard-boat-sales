@@ -1,13 +1,59 @@
-# RJ's Outboard Sales & Service — Build & Structure Guide
+# Static Site Build & Structure Guide (reusable template)
 
-The rulebook for building this site. Read it before writing any HTML, CSS or JS.
-
-**Current goal:** build the **Home page** from Figma, pixel-perfect, working on every screen size.
-
-Figma (Home frame, dev mode):
-<https://www.figma.com/design/oOgodTh38PiZrw5An3hVph/RJ-s-Outboard-Sales---Service?node-id=1-267&m=dev>
+The rulebook for building a static marketing site that is later cloned into **Madis** and made dynamic. Read it before writing any HTML, CSS or JS. It was written on **RJ's Outboard Sales & Service** (the current site profile, §A.1) and is reused, with minimal changes, for every new site.
 
 This is a plain static site: HTML + Bootstrap 4 + jQuery. No build step, no framework.
+
+---
+
+## A. Using this guide on a new site (AI tools: read this first)
+
+### A.1 Site profile — the only values that change per site
+
+Copy this guide into the new project, then update **only** this table (and the matching tokens in `style.css`). Everything else is the house standard and stays as written.
+
+| Item | RJ's Outboard (current) | New site → fill in |
+|---|---|---|
+| Site / business name | RJ's Outboard Sales & Service | |
+| Class prefix | `rj-` | `<prefix>-` (short, lowercase, one per site) |
+| Figma file | `oOgodTh38PiZrw5An3hVph` (Home node `1-267`) | |
+| Image CDN base | `https://cdn.mdsbrand.com/mean-rj-outboard/assets/images/` | |
+| Fonts (`--font-display` / `--font-body` / `--font-label`) | Sora / Archivo / Inter | |
+| Colour tokens | Figma styles (§4.2, §6) | |
+| Header variants | top bar on Home + Bennington only (`rj-no-topbar`) | |
+| Page list | home, about, meet-team, parts, service-center, repower, financing, sell-trade, schedule-demo, contact, bennington, testimonials, faqs, blog, blog-post | |
+
+Throughout this guide, examples use the RJ prefix `rj-` — **substitute the new site's prefix everywhere**. Sections marked *(RJ example)* (§2.3 menu details, §9.2–§9.4 page blocks) show how a site was built; reuse the idea, not the exact classes.
+
+### A.2 What stays the same on every site (do not redesign)
+
+- Page skeleton: head / header / menu / content / footer / scripts (§2), file layout (§1), region order in `style.css` (§5), single `RESPONSIVE` block (§7).
+- Class naming (§3), clean-code rules (§4), Bootstrap grid for repeating items (§8.1), Owl Carousel for sliders (§10).
+- The shared common blocks with camelCase names — `commonSection*`, `commonPara`, `featured-btn`, share modal, special banner, form error states (§14). Copy them as-is; only the `:root` token values change.
+- **The Madis form markup pattern (§15).** Every form on every site is written this way from the start.
+
+### A.3 The workflow this guide serves (static first, Madis second)
+
+1. **Static build (this project).** Build the pages from Figma as plain HTML/CSS following this guide. The markup must already be **Madis-ready** — in particular every form follows §15 — but the project contains **no form logic, no Handlebars and no new JS**.
+2. **Clone Madis.** Madis lives at `C:\Office Data\office code\MDS Brand\Madis\mean-madis` (Express + Handlebars; form logic in `public/assets/js/forms.js`, form views in `views/themes/Material/*.hbs`, footer newsletter in `views/layouts/layout.hbs`, UTM partial in `views/partials/utm.hbs`).
+3. **Paste and wire.** The pages/markup from this project are pasted into the Madis clone, then made dynamic **using the markup as it is** — because the ids, classes and `data-` attributes already match `forms.js`, only the Handlebars bits (§15.5) and the handler field lists need touching.
+
+### A.4 Hard rules for AI tools working in this project
+
+- **Markup only for forms.** Never add `<script>` tags, inline handlers, `fetch`/AJAX, validation JS or Handlebars logic (`{{#if}}`, `{{config…}}`) to the static pages. The single permitted Handlebars token is `{{> partials/utm}}` inside a form (§15.3).
+- **All CSS goes in `style.css`** (golden rule 6), in the right region, with `@media` in `RESPONSIVE` and colours as tokens. Never a second stylesheet, `<style>` tag or inline style (the honeypot's `display: none` is the one exception).
+- **Don't change look or layout when adding hooks.** New ids, classes and attributes are additive; never remove or rename an existing styling class to "fix" markup.
+- **Don't invent a pattern** when Madis already has one — read `forms.js` and the nearest `.hbs` first (§15.1), reuse its ids, and flag every place the new site's fields differ (§15.4).
+- If a Figma value or a form field has no clear Madis equivalent, **ask or flag it**; don't guess silently.
+
+### A.5 Starting a new site — checklist
+
+- [ ] Copy this guide and `style.css`'s token + common regions into the new project; fill §A.1.
+- [ ] Rename the `rj-` prefix to the new prefix in the copied CSS/HTML (search-and-replace `rj-` → `<prefix>-`; camelCase common blocks stay unchanged).
+- [ ] Update `:root` tokens: palette, fonts, header heights (§4.2).
+- [ ] Re-point the head/footer/header copy, CDN image base and `<title>` / `<meta>` text (§2).
+- [ ] Build each page (§12); every form follows §15 from the first draft.
+- [ ] Run the §13 checklist and the §16 Madis hand-off checklist before handing the pages over.
 
 ---
 
@@ -44,7 +90,7 @@ RJ outboard Sales/
 - Image and video file names are lowercase-kebab-case and describe the content: `hero-boat-on-lake.jpg`, not `IMG_0231.jpg` or `Frame 12.png`.
 - Export images from Figma at **2x** (and SVG for icons/logos) so they stay sharp on retina screens.
 
-> **Status:** the Home page has been rebuilt to this guide from the Figma frame. The previous project's `pkm-` classes, Cinzel/cobalt/aqua palette and CDN images are gone. Any value in this guide that disagrees with Figma is stale — Figma wins (see §6).
+> **Status (RJ):** every page is built to this guide from its Figma frame. Any value in this guide that disagrees with Figma is stale — Figma wins (see §6).
 
 ---
 
@@ -123,7 +169,7 @@ jQuery **must** come first.
 </html>
 ```
 
-### 2.3 Header, menus, footer
+### 2.3 Header, menus, footer *(menu details are an RJ example)*
 
 These are identical on every page. Build them once on the Home page from Figma, then copy them unchanged to every other page. Wire links to real files where they exist; use `javascript:void(0)` as the placeholder everywhere else.
 
@@ -480,25 +526,13 @@ $(document).ready(function () {
 3. Header / nav / menu logic goes first and runs site-wide; carousels go last.
 4. Find elements by `data-` attributes or `js-` classes (§3.2 rule 7).
 
-### 9.1.1 Madis form pattern (current markup — supersedes the `.js-form` description below)
+### 9.1 Form layout classes
 
-Form markup follows Madis (`mean-madis/public/assets/js/forms.js`) so the pages can be pasted into a Madis clone and wired up without touching the markup. **Markup only — no form JS lives in this project.**
+Form **behaviour** is Madis's, not ours — the markup contract is in §15 and there is no form JS in this project. This section only covers how forms look. Field styling is the shared `.rj-field__label` / `.rj-field__input` family in the common region (`--compact`, `--select`, `--date`, `--textarea`). A date field is `type="text"` + `js-date-input` so its placeholder shows. The two-column form pages (Schedule Demo, Contact) share `.rj-form-column` > `.rj-form-intro` + `.rj-form-card` (`--tinted` for the grey card; pair it with `.rj-field__input--on-tint`).
 
-- **Container, not `<form>`:** the form is a `<div>` carrying `gtm_form`, a unique `id` (`contact_form`, `schedule-demo`, `value_trade`, `part_form`, `service_form`, `repower_form`, `subscribe-newsletter`) and `data-form-id="<GTM name>"`. The id is what `forms.js` validates and clears.
-- **Fields:** every input/select/textarea has an `id` (snake_case; Madis ids where one exists: `full_name`, `email`, `phone`, `phoneNo`, `year`, `boat_make`, `boat_model`, `comments`, `best-phone`, `prefered_date`, `subscriber-email`), a matching `<label for>`, and the class `require_check` when mandatory (replaces the `required` attribute). Telephone fields add `phoneInput` (the intl-tel-input hook).
-- **Errors:** each field is followed by `<div class="field-error" id="error_<fieldId>"></div>`; the script adds `error_field` to the invalid field (styled in the common region, §14.4).
-- **Spam + tracking:** a `.honeypot` text input (`id="honeypot_<form_id>"`, the one allowed inline `display: none`) and the global `{{> partials/utm}}` partial sit just before the submit button — never write the seven `utm_*` inputs out by hand. The newsletter has the honeypot only.
-- **Submit button:** `gtm_form_submit g-recaptcha` + `id`, `data-form-id`, `data-sitekey=""`, `data-callback="<global fn name>"`, `data-action="submit"`. In the Madis clone fill `data-sitekey` with `{{config.googleCaptchaSiteKey}}`.
-- **`sr-only`:** a label that has no visible text uses `class="sr-only"` (the newsletter email). Visible labels are not made `sr-only`.
-- Keep the form's existing `rj-` classes — the pattern adds hooks, it never replaces styling classes.
+Sell/Trade and Service Center share the `.rj-request` block too (a contact card + an 8-field form in `.row.rj-row-gap-24`); anchor CTAs to `#rj-request`. *(RJ example)*
 
-### 9.1 Forms
-
-Every form that has no backend yet uses the one shared handler: give the `<form>` `class="js-form"` and `data-success-message="…"`, and add a `<p class="rj-form-message js-form-message" role="status" hidden></p>` inside it. It validates with the browser, shows the message and resets. Field styling is the shared `.rj-field__label` / `.rj-field__input` family in the common region (`--compact`, `--select`, `--date`, `--textarea`). A date field is `type="text"` + `js-date-input` so its placeholder shows. The two-column form pages (Schedule Demo, Contact) share `.rj-form-column` > `.rj-form-intro` + `.rj-form-card` (`--tinted` for the grey card; pair it with `.rj-field__input--on-tint`).
-
-Sell/Trade and Service Center share the `.rj-request` block too (a contact card + an 8-field form in `.row.rj-row-gap-24`); anchor CTAs to `#rj-request`.
-
-### 9.3 Shared building blocks (reuse before writing new)
+### 9.3 Shared building blocks (reuse before writing new) *(RJ example)*
 
 - `.rj-spec-card` (label + bold line + short text; `--dark` for navy/photo sections) — five placements on Repower.
 - `.rj-bleed` full-width photo bands: set `--bleed-aspect` / `--bleed-height` (`--banner`, `--wide`), photo is `.rj-bleed__photo`; a Figma zoom is `.rj-bleed__photo--zoomed` + a crop class that sets `--zoom-width` / `--zoom-left` / `--zoom-shift`.
@@ -512,11 +546,11 @@ Sell/Trade and Service Center share the `.rj-request` block too (a contact card 
 - `.rj-fin-columns` (520px copy column + flexible stats column, stacks at ≤991) and `.rj-fin-point` (red label + sentence) — Financing hero, estimator and highlights.
 - Images used on more than one page live in `assets/images/common/` (e.g. `logo-yamaha-white.png`, `photo-bennington-pontoon.jpg`, `photo-skeeter-bass-boat.png`).
 
-### 9.4 Loan estimator (Financing)
+### 9.4 Loan estimator (Financing) *(RJ example)*
 
 `.rj-estimator.js-estimator` carries `data-rate` (APR %), `data-min` and `data-max`. The amount field is `.js-estimator-amount` (a text input showing `$55,000`: digits only, selects on focus, ↑/↓ nudge by $1,000 / $10,000 with Shift, clamped on blur), the term buttons are `.js-estimator-term[data-months]` (`aria-pressed`), and the result goes into `.js-estimator-payment`. Payment = `P·r / (1 − (1 + r)^−n)` with `r = APR / 12`. Figma only draws a static `$55,000` box for the slider and a placeholder `$389`; the live version starts on the Figma state (120 months) and so shows the correctly computed `$624`.
 
-### 9.2 Interior page heroes
+### 9.2 Interior page heroes *(RJ example)*
 
 Sell/Trade and Schedule Demo share `.rj-page-hero` (photo, scrim, left column). A page sets only its own `min-height`, vertical alignment, padding and `--hero-scrim` gradient.
 
@@ -563,20 +597,20 @@ if ($('.rj-reviews__slider').length) {
 
 ---
 
-## 12. Workflow for building the Home page
+## 12. Workflow for building a page
 
 Work **section by section** in Figma order. For each section:
 
 1. **Read the Figma node** for that section: sizes, spacing, colours, text styles, image crops. Note the values; don't estimate.
 2. **Name it** (§3): decide the block name (`rj-hero`, `rj-new-arrivals`, …) and its elements before writing CSS.
 3. **Write the HTML** with semantic tags, existing shared classes first (§3.3), Bootstrap grid for repeating items (§8.1).
-4. **Write the base CSS** in the Home page region — tokens only, no hard-coded colours.
+4. **Write the base CSS** in that page's region — tokens only, no hard-coded colours.
 5. **Match 1920** against Figma until it's pixel-perfect.
 6. **Add responsive CSS** in the shared `RESPONSIVE` block (§7.2), checking every width in §7.1.
 7. **Add JS** only if the section needs behaviour (§9).
 8. **Tidy** (§13) before moving to the next section.
 
-Build order for the page: **shared head → header + mega menus + mobile drawer → each Home section in Figma order → footer → script block**.
+Build order for the page: **shared head → header + mega menus + mobile drawer → each section in Figma order → footer → script block**.
 
 ---
 
@@ -596,6 +630,7 @@ Build order for the page: **shared head → header + mega menus + mobile drawer 
 - [ ] Headings, icons, images and media wrappers get `cursor: pointer` via the shared selector list.
 - [ ] In every card/section with a single CTA, the image and heading link to the same `href` as the button (§6.1.1).
 - [ ] Sliders use Owl Carousel; JS is in its own labelled, `.length`-guarded region.
+- [ ] Every form follows the Madis markup pattern (§15) and passes the §16 hand-off checklist.
 
 **Content & quality**
 - [ ] One `<h1>`; headings in order; every `<img>` has `alt`, `width`, `height`.
@@ -727,3 +762,134 @@ Whenever you add CSS for a block that will repeat across sites:
 2. Colours come from `:root` tokens (§4.2). If a colour is new, add a token; don't paste a hex value.
 3. Every `@media` goes in the matching breakpoint in `RESPONSIVE` (§7.2) — never open a second block for a breakpoint that exists.
 4. Add the block to this section (markup + class table) so the next site starts from it.
+
+---
+
+## 15. Forms — the Madis markup pattern
+
+Every form (page forms, modals, the footer newsletter) is written to the contract below so the pasted markup works with Madis's `forms.js` unchanged. **Markup only: no JS, no `fetch`, no Handlebars except `{{> partials/utm}}`.**
+
+### 15.1 Read the source first
+
+Before writing or changing a form, open the Madis equivalents (path in §A.3):
+
+1. `public/assets/js/forms.js` — the handler for that form: which ids it reads (`$('#…')`), its container id (`form:`), slug and callback name. The header comment explains `sendLead()`, validation, spam check, GTM and redirect.
+2. The nearest view in `views/themes/Material/` (`contact.hbs`, `value_trade.hbs`, `service.hbs`, `schedule_test_drive.hbs`, `parts&sevice.hbs`, `storage.hbs`, `slips.hbs`, `seasonal-service.hbs`, `Careers.hbs`, `event-detail*.hbs`, `boat_detail*.hbs`) and `views/layouts/layout.hbs` (footer newsletter).
+3. If no Madis form is close (e.g. RJ's *Repower*), follow §15.2 with ids you choose (snake_case) and flag it for the wiring step.
+
+### 15.2 The contract
+
+| Piece | Rule |
+|---|---|
+| **Container** | A `<div>` (never `<form>`; a native Enter-key submit would reload the page) with class `gtm_form`, a **unique page-level `id`** and `data-form-id="<GTM form name>"`. `forms.js` validates and clears everything inside `#<id>`. Keep the element's existing styling classes. |
+| **Field** | Every `input` / `select` / `textarea` has an `id` (read by `$('#id')`), a `<label for="id">`, and — when mandatory — the class `require_check`. Do **not** use the `required` attribute (validation is custom). Keep `name`, `placeholder`, `autocomplete`, `maxlength` etc. |
+| **Error container** | Directly after each field: `<div class="field-error" id="error_<fieldId>"></div>`. The script writes the message there and adds `error_field` to the field (§14.4). |
+| **Phone** | `type="tel"` + class `phoneInput` (intl-tel-input hook) + `require_check` when mandatory. Id is `phone`, except `phoneNo` (contact) and `best-phone` (schedule). |
+| **Email** | `type="email"` — `forms.js` checks the format by type. |
+| **Select / textarea** | Same as inputs: `id`, `require_check` if mandatory, error container after the element. |
+| **Radios / checkboxes** | Read by `name` (e.g. `trade_in`) or id (`disclaimer`); no `require_check`. |
+| **Hidden extras** | Plain `<input type="hidden" id="…">` when a handler reads one (e.g. `event_url`). |
+| **Honeypot** | `<input type="text" name="honeypot" id="honeypot_<container_id_with_underscores>" class="honeypot" style="display: none;">` inside the container, one per form. (The one allowed inline style.) |
+| **UTM** | `{{> partials/utm}}` once per page form, placed after the fields and before the submit button. Never hand-write the `utm_*` inputs. The newsletter has none. |
+| **Submit button** | `<button id="<button-id>" class="<existing classes> gtm_form_submit g-recaptcha" type="submit" data-form-id="<same GTM name>" data-sitekey="" data-callback="<global handler name>" data-action="submit">Label</button>` — the Madis views use `type="button"` or no type; any is fine inside a `<div>`. |
+| **`sr-only`** | A label with no visible text (placeholder-only field, newsletter email) gets `class="sr-only"`. Visible labels are never made `sr-only` — it would change the layout. |
+| **Labels & placeholders** | Keep the Figma design. `forms.js` builds "<Label> is required." from `label[for=id]` (the `*` is stripped), else from the placeholder. |
+| **Success / notify** | Madis shows messages through the global `showNotification()` and `#notify_message`; the static page needs no message element. |
+
+### 15.3 Templates
+
+Page form:
+
+```html
+<div class="rj-form-card gtm_form" id="contact_form" data-form-id="Contact Us Form">
+    <div class="rj-form-card__field">
+        <label class="rj-field__label" for="first_name">First name <span aria-hidden="true">*</span></label>
+        <input class="rj-field__input require_check" type="text" id="first_name" name="first_name" autocomplete="given-name">
+        <div class="field-error" id="error_first_name"></div>
+    </div>
+
+    <div class="rj-form-card__field">
+        <label class="rj-field__label" for="phoneNo">Phone <span aria-hidden="true">*</span></label>
+        <input class="rj-field__input phoneInput require_check" type="tel" id="phoneNo" name="phoneNo" autocomplete="tel">
+        <div class="field-error" id="error_phoneNo"></div>
+    </div>
+
+    <input type="text" name="honeypot" id="honeypot_contact_form" class="honeypot" style="display: none;">
+    {{> partials/utm}}
+    <button id="contact-submit-form" class="rj-button rj-button--accent gtm_form_submit g-recaptcha" type="submit"
+        data-form-id="Contact Us Form" data-sitekey="" data-callback="contact_form" data-action="submit">Send message</button>
+</div>
+```
+
+Footer newsletter (identical on every page; no UTM, no `require_check`, as in `layout.hbs`):
+
+```html
+<div class="rj-newsletter__form gtm_form" id="subscribe-newsletter" data-form-id="Newsletter Form">
+    <input type="text" name="honeypot" id="honeypot_subscribe_newsletter" class="honeypot" style="display: none;">
+    <label class="sr-only" for="subscriber-email">Email address</label>
+    <input class="rj-newsletter__input" type="email" id="subscriber-email" name="email" placeholder="you@email.com" autocomplete="email" required>
+    <button class="rj-button rj-button--accent rj-button--small gtm_form_submit g-recaptcha" type="submit"
+        data-form-id="Newsletter Form" data-sitekey="" data-callback="subscribeNewsletter" data-action="submit">Sign up</button>
+</div>
+```
+
+### 15.4 Madis form reference (what each handler reads)
+
+Names are what `forms.js` (`sendLead`) expects. Container ids are unique per page, so a page form and the footer newsletter never clash.
+
+| Form | Container `id` | `data-form-id` | `data-callback` | Button id | Ids the handler reads |
+|---|---|---|---|---|---|
+| Contact | `contact_form` | Contact Us Form | `contact_form` | `contact-submit-form` | `first_name`, `last_name`, `email`, `phoneNo`, `comments`, `preferredContact`, `location` |
+| Value trade / sell-trade | `value_trade` | Value Trade Form | `value_trade` | `value-trade-form` | `full_name`, `email`, `phone`, `zip`, `year`, `boat_make`, `boat_model`, `hin`, `hour_boat` |
+| Service | `service_form` | Service Form | `service_form` | `service-form` | `full_name`, `email`, `phone`, `year`, `hin`, `service_date`, `hour_boat` |
+| Schedule demo / test drive | `schedule-demo` | Schedule Test Drive | `schedule_demo` | `schedule-demo-form` | `first-name`, `last-name`, `email`, `best-phone`, `party-size`, `comments`, `year`, `make`, `model`, `prefered_time`, `prefered_date` |
+| Parts | `part_form` | Parts Form | `part_form` | `slip-form-submit` | `full_name`, `email`, `phone`, `boat_info`, `Parts-no`, `message_parts`, `message` |
+| Seasonal service | `seasonal_form` | Seasonal Form | `seasonal_form` | `seasonal-form-submit` | `full_name`, `email`, `phone`, `boat_info`, `service_date`, `message` |
+| Slips | `slip_form` | Slip Form | `slip_form` | `seasonal-form-submit` | `full_name`, `email`, `phone`, `boat_info`, `service_date`, `message` |
+| Storage | `storage_form` | Storage Form | `storage_form` | `storage-form-submit` | `full_name`, `email`, `phone`, `boat_info`, `message` |
+| Event detail | `event_detail_form` | Event Detail Form | `event_detail_form` | — | `first_name`, `last_name`, `email`, `phone`, `comments`, `event_url` (hidden) |
+| Boat detail (VDP) | `contact_for_boat` | VDP Form | `contact_for_boat` | — | `f_name`, `l_name`, `email`, `phone`, `zip_code`, radio `trade_in`, `availability`, `boat_make`, `boat_model`, `boat_year`, `boat_stock_no`, `boat_hull_id` |
+| Boat sold | `boat_sold_form` | VDP Sold Form | `boatSoldForm` | — | `first_name`, `last_name`, `email`, `comments` |
+| Careers (modal, résumé upload) | `career_form` (wrapper) | Career Form | `career_form_submission` | `career-form` | `firstName`, `lastName`, `email`, `phone`, `coverLetter`, `jobTitle`, checkbox `disclaimer`, one `input[type=file]` (pdf/doc/docx) |
+| Footer newsletter | `subscribe-newsletter` | Newsletter Form | `subscribeNewsletter` | — | `subscriber-email` |
+
+### 15.5 When the new site's fields differ from Madis
+
+Build to the Figma design first, then match Madis as far as it goes **without changing the layout**:
+
+1. **Same meaning → Madis id.** A "Phone" field is `phone` (`phoneNo` / `best-phone` where the table says), a "Message" is `comments` or `message` as that Madis form uses it, a vessel year is `year`, make `boat_make`, model `boat_model`.
+2. **No Madis equivalent → snake_case id** from the field's meaning (`vessel_condition`, `service_type`, `repower_type`) with its own `error_<id>`.
+3. **Different shape → don't reshape the design.** If Figma has one *Name* field where Madis reads `first_name` + `last_name` (or the reverse), keep Figma's fields, use the closest id (`full_name`, or `first_name` / `last_name`), and **list the mismatch** in the hand-off note. Never silently split or merge fields — that changes the layout.
+4. **No Madis form fits** (RJ's *Repower*): use the Madis container pattern with an id/callback you choose (`repower_form`) and say so.
+5. **Hand-off note.** At the end of the task, list every form → container id → callback, plus each mismatch from rule 3, so the wiring step knows which handler lines to edit in `forms.js`.
+
+*RJ example:* Contact has a single `full_name` (Madis reads `first_name` + `last_name`); Sell/Trade, Parts, Service and Repower have `first_name` + `last_name` and `year` / `boat_make` / `boat_model` (Madis value_trade / service / part read `full_name` and `boat_info`).
+
+### 15.6 What the Madis clone step adds (not in this project)
+
+- `data-sitekey=""` → `{{config.googleCaptchaSiteKey}}` on every submit button.
+- The handler functions in `forms.js` (new ones follow its "HOW TO ADD A NEW FORM" recipe) and an email template in admin per slug.
+- reCAPTCHA, intl-tel-input and `showNotification()` come from Madis's own script lists — don't add them here.
+- Success-message markup (`#sucess_message`, `#notify_message`) and any other Handlebars come from Madis.
+
+---
+
+## 16. Madis hand-off checklist
+
+Run this before telling the user the pages are ready to paste into a Madis clone.
+
+**Forms (§15)**
+- [ ] Every form is a `<div class="… gtm_form" id="…" data-form-id="…">`; no `<form>` elements remain.
+- [ ] Container ids are unique per page and match §15.4 (or are flagged as new).
+- [ ] Every field has `id` + `label for`; mandatory ones have `require_check`; no `required` attribute left (the newsletter email keeps it, as in Madis).
+- [ ] Every field has its `error_<id>` container; phone fields have `phoneInput`.
+- [ ] Each form has one honeypot; each page form has `{{> partials/utm}}` (not hand-written inputs).
+- [ ] Each submit button has `gtm_form_submit g-recaptcha`, `data-form-id`, `data-sitekey=""`, `data-callback`, `data-action="submit"`.
+- [ ] Placeholder-only fields have an `sr-only` label; visible labels are untouched.
+- [ ] No duplicate ids on any page; every `label for` points at an existing id.
+- [ ] Mismatches with Madis handlers are listed for the user (§15.5 rule 5).
+
+**Project**
+- [ ] No new JS, inline scripts or Handlebars other than `{{> partials/utm}}` were added.
+- [ ] Look and layout are unchanged — only ids, classes, attributes and empty/hidden elements were added.
+- [ ] New CSS (if any) is in `style.css`, in the right region, using tokens (§14.5).
