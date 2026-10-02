@@ -630,11 +630,78 @@ These blocks recur on almost every page of the sites built from this guide. They
 
 ### 14.2 Share modal (`#contactModal_email`)
 
-`.shareModalHeading`; `.popup_input` + `.copyShareLinkBtn` inside `.copyLinkWrapper` (the copy-link row); `.shareIconsWrapper` > `.shareIconsContainer` > `.shareIcons` (50px round outline icons, Font Awesome `fa-brands` inside). The `#contactModal_email` rules strip the header border and cap the dialog at 450px. `.desktopShareBtn` shows above 991px and `.mobileShareBtn` (native share sheet) at ≤991 — exactly one is visible at any width.
+A Bootstrap 4 modal. The two `#contactModal_email` rules are the only ID selectors in the stylesheet and are allowed here because they override Bootstrap's modal defaults; every other rule is a class.
+
+```html
+<div class="modal fade" id="contactModal_email" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header"> <h5 class="shareModalHeading">Share</h5> <button class="close" data-dismiss="modal">×</button> </div>
+            <div class="modal-body">
+                <div class="copyLinkWrapper">
+                    <input class="popup_input" type="text" readonly value="PAGE URL">
+                    <button class="copyShareLinkBtn" type="button">Copy</button>
+                </div>
+                <div class="shareIconsWrapper">
+                    <div class="shareIconsContainer">
+                        <a class="shareIcons" href="…" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <!-- one .shareIcons per network -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+> The skeleton is inferred from the CSS — the markup isn't in any page yet. Adjust it to the real modal when the first page uses it.
+
+| Selector | What it does |
+|---|---|
+| `#contactModal_email .modal-header` | no bottom border, 30px top padding |
+| `#contactModal_email .modal-dialog` | `max-width: 450px` |
+| `.shareModalHeading` | 20/24, uppercase, weight 300, `--color-near-black` |
+| `.copyLinkWrapper` | flex row, centred — holds the URL field and the Copy button |
+| `.popup_input` | URL field: `calc(100% - 100px)` wide, 43px tall, white, 1px `--color-input-border`, 10px side padding |
+| `.copyShareLinkBtn` | Copy button: `--color-near-black` fill, white text, uppercase, 16px / 0.8px tracking, weight 200, 10px 30px padding, no border/outline, 0.4s transition |
+| `.shareIconsWrapper` | 40px top margin |
+| `.shareIconsContainer` | flex row, 30px gap |
+| `.shareIconsContainer .fa-brands` | icon colour `--color-near-black` |
+| `.shareIcons` | 50×50 round white button, 1px `--color-black` border, icon centred |
+| `.desktopShareBtn` / `.mobileShareBtn` | the trigger: desktop shows the modal button (`display: block`), mobile shows the native share-sheet button. At ≤991 they swap (`.desktopShareBtn` → `none`, `.mobileShareBtn` → `block`) — exactly one is visible at any width |
 
 ### 14.3 "Special" banner (featured boat strip)
 
-`.specialBanner` (charcoal band) > `.specialTag` (positioned wrapper) holding `.specialWhiteLine` (hairline) and `.specialTagText` (Inter, uppercase label centred over the line on a charcoal chip) · `.specialBoatTitle` (Sora 20/28 bold) · `.specailMoreDetailBtn` (muted "more details" link — **the spelling is intentional**, it matches the live HTML) with `.specialBtnArrow` (arrow that flips via `.rotate180Deg`) · `.specialShortDescpWrap` (hidden until toggled) > `.specialShortDescpText`.
+```html
+<div class="specialBanner">
+    <div class="specialTag">
+        <hr class="specialWhiteLine">
+        <span class="specialTagText">Special</span>
+    </div>
+    <h3 class="specialBoatTitle">2025 Bennington 24 MFBSE</h3>
+    <div class="text-center">
+        <a class="specailMoreDetailBtn js-special-toggle" href="javascript:void(0)">More Details <i class="fa-solid fa-chevron-down specialBtnArrow"></i></a>
+    </div>
+    <div class="specialShortDescpWrap"><p class="specialShortDescpText">Short description.</p></div>
+</div>
+```
+
+> Skeleton inferred from the CSS, as in §14.2. The toggle hook is a `js-` class; script.js shows `.specialShortDescpWrap` and adds `.rotate180Deg` to the arrow.
+
+| Selector | What it does |
+|---|---|
+| `.specialBanner` | `--color-charcoal` band, padding `22px 23px 8px` |
+| `.specialTag` | `position: relative` wrapper for the line + centred label |
+| `.specialWhiteLine` | 1px hairline, `--white-20`, no margin |
+| `.specialTagText` | label centred over the line (`absolute`, 50%/50%, `translate(-50%,-50%)`, `z-index: 2`) on a charcoal chip with 10% side padding; Inter 16/24, weight 300, 0.8px tracking, uppercase, white |
+| `.specialBoatTitle` | Sora 20/28, bold, centred, white |
+| `.specailMoreDetailBtn` | muted "more details" link: `--white-60`, Archivo 16/24 weight 300, inline-flex, 10px gap. **The spelling is intentional** — it matches the live HTML. Hover keeps the same colour |
+| `.specialShortDescpWrap` | `display: none` until the toggle shows it |
+| `.specialShortDescpText` | Archivo 16/22, weight 300, white |
+| `.specialBtnArrow` | arrow icon, `position: relative`, 0.4s transition |
+| `.rotate180Deg` | `rotate(180deg)` — added to the arrow when the description is open |
+
+The stylesheet has a stray `/* accordian css END*/` comment just above this block, left over from the template — there are no accordion rules in it (FAQ accordions are the `rj-faq-card` family). Safe to delete.
 
 ### 14.4 Form error states
 
