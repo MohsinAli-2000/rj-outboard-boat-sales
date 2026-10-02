@@ -243,63 +243,70 @@
                         private demo.</p>
                 </div>
 
-                <form class="rj-form-card js-form" action="javascript:void(0)"
-                    data-success-message="Thanks — our team will confirm your sea trial shortly." novalidate>
+                <div class="rj-form-card gtm_form" id="schedule-demo" data-form-id="Schedule Test Drive">
                     <div class="rj-form-card__fields">
                         <div class="rj-form-card__field rj-form-card__field--full">
-                            <label class="rj-field__label" for="rj-demo-name">Full name <span
+                            <label class="rj-field__label" for="full_name">Full name <span
                                     aria-hidden="true">*</span></label>
-                            <input class="rj-field__input rj-field__input--compact" type="text" id="rj-demo-name"
-                                name="full_name" placeholder="Jane Smith" autocomplete="name" required>
+                            <input class="rj-field__input rj-field__input--compact require_check" type="text" id="full_name"
+                                name="full_name" placeholder="Jane Smith" autocomplete="name">
+                            <div class="field-error" id="error_full_name"></div>
                         </div>
 
                         <div class="rj-form-card__field">
-                            <label class="rj-field__label" for="rj-demo-email">Email address <span
+                            <label class="rj-field__label" for="email">Email address <span
                                     aria-hidden="true">*</span></label>
-                            <input class="rj-field__input rj-field__input--compact" type="email" id="rj-demo-email"
-                                name="email" placeholder="jane@example.com" autocomplete="email" required>
+                            <input class="rj-field__input rj-field__input--compact require_check" type="email" id="email"
+                                name="email" placeholder="jane@example.com" autocomplete="email">
+                            <div class="field-error" id="error_email"></div>
                         </div>
 
                         <div class="rj-form-card__field">
-                            <label class="rj-field__label" for="rj-demo-phone">Phone number <span
+                            <label class="rj-field__label" for="best-phone">Phone number <span
                                     aria-hidden="true">*</span></label>
-                            <input class="rj-field__input rj-field__input--compact" type="tel" id="rj-demo-phone"
-                                name="phone" placeholder="(813) 555-0155" autocomplete="tel" required>
+                            <input class="rj-field__input rj-field__input--compact phoneInput require_check" type="tel" id="best-phone"
+                                name="phone" placeholder="(813) 555-0155" autocomplete="tel">
+                            <div class="field-error" id="error_best-phone"></div>
                         </div>
 
                         <div class="rj-form-card__field">
-                            <label class="rj-field__label" for="rj-demo-date">Preferred date <span
+                            <label class="rj-field__label" for="prefered_date">Preferred date <span
                                     aria-hidden="true">*</span></label>
-                            <input class="rj-field__input rj-field__input--compact rj-field__input--date js-date-input"
-                                type="text" id="rj-demo-date" name="preferred_date" placeholder="Select Date..."
-                                autocomplete="off" required>
+                            <input class="rj-field__input rj-field__input--compact rj-field__input--date js-date-input require_check"
+                                type="text" id="prefered_date" name="preferred_date" placeholder="Select Date..."
+                                autocomplete="off">
+                            <div class="field-error" id="error_prefered_date"></div>
                         </div>
 
                         <div class="rj-form-card__field">
-                            <label class="rj-field__label" for="rj-demo-boat">Boat of interest <span
+                            <label class="rj-field__label" for="boat_of_interest">Boat of interest <span
                                     aria-hidden="true">*</span></label>
-                            <select class="rj-field__input rj-field__input--compact rj-field__input--select"
-                                id="rj-demo-boat" name="boat_of_interest" required>
+                            <select class="rj-field__input rj-field__input--compact rj-field__input--select require_check"
+                                id="boat_of_interest" name="boat_of_interest">
                                 <option value="skeeter-zxr-21" selected>Skeeter ZXR 21</option>
                                 <option value="bennington-22-svsr">Bennington 22 SVSR</option>
                                 <option value="war-eagle-961-blackhawk">War Eagle 961 Blackhawk</option>
                                 <option value="xpress-h20b">Xpress H20B</option>
                                 <option value="not-sure">Not sure yet</option>
                             </select>
+                            <div class="field-error" id="error_boat_of_interest"></div>
                         </div>
 
                         <div class="rj-form-card__field rj-form-card__field--full">
-                            <label class="rj-field__label" for="rj-demo-notes">Additional recognition notes</label>
+                            <label class="rj-field__label" for="comments">Additional recognition notes</label>
                             <textarea class="rj-field__input rj-field__input--compact rj-field__input--textarea"
-                                id="rj-demo-notes" name="notes"
+                                id="comments" name="notes"
                                 placeholder="Let us know if you have specific outboard or electronic preferences..."></textarea>
+                            <div class="field-error" id="error_comments"></div>
                         </div>
                     </div>
 
-                    <button class="rj-button rj-button--accent rj-button--small rj-button--block rj-form-card__submit"
-                        type="submit">Request my sea trial</button>
+                    <input type="text" name="honeypot" id="honeypot_schedule_demo" class="honeypot" style="display: none;">
+                    {{> partials/utm}}
+                    <button id="schedule-demo-form" class="rj-button rj-button--accent rj-button--small rj-button--block rj-form-card__submit gtm_form_submit g-recaptcha" type="submit"
+                        data-form-id="Schedule Test Drive" data-sitekey="" data-callback="schedule_demo" data-action="submit">Request my sea trial</button>
                     <p class="rj-form-message js-form-message" role="status" hidden></p>
-                </form>
+                </div>
             </div>
 
             <div class="rj-demo__expectations">
@@ -422,13 +429,15 @@
                         spam — we're too busy rigging boats.</p>
                 </div>
 
-                <form class="rj-newsletter__form js-form" data-success-message="Thanks — you're on the list." action="javascript:void(0)" novalidate>
-                    <label class="sr-only" for="rj-newsletter-email">Email address</label>
-                    <input class="rj-newsletter__input" type="email" id="rj-newsletter-email" name="email"
+                <div class="rj-newsletter__form gtm_form" id="subscribe-newsletter" data-form-id="Newsletter Form">
+                    <input type="text" name="honeypot" id="honeypot_subscribe_newsletter" class="honeypot" style="display: none;">
+                    <label class="sr-only" for="subscriber-email">Email address</label>
+                    <input class="rj-newsletter__input" type="email" id="subscriber-email" name="email"
                         placeholder="you@email.com" autocomplete="email" required>
-                    <button class="rj-button rj-button--accent rj-button--small" type="submit">Sign up</button>
+                    <button class="rj-button rj-button--accent rj-button--small gtm_form_submit g-recaptcha" type="submit"
+                        data-form-id="Newsletter Form" data-sitekey="" data-callback="subscribeNewsletter" data-action="submit">Sign up</button>
                     <p class="rj-newsletter__message js-form-message" role="status" hidden></p>
-                </form>
+                </div>
             </div>
         </div>
 

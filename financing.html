@@ -500,13 +500,15 @@
                         spam — we're too busy rigging boats.</p>
                 </div>
 
-                <form class="rj-newsletter__form js-form" data-success-message="Thanks — you're on the list." action="javascript:void(0)" novalidate>
-                    <label class="sr-only" for="rj-newsletter-email">Email address</label>
-                    <input class="rj-newsletter__input" type="email" id="rj-newsletter-email" name="email"
+                <div class="rj-newsletter__form gtm_form" id="subscribe-newsletter" data-form-id="Newsletter Form">
+                    <input type="text" name="honeypot" id="honeypot_subscribe_newsletter" class="honeypot" style="display: none;">
+                    <label class="sr-only" for="subscriber-email">Email address</label>
+                    <input class="rj-newsletter__input" type="email" id="subscriber-email" name="email"
                         placeholder="you@email.com" autocomplete="email" required>
-                    <button class="rj-button rj-button--primary rj-button--small" type="submit">Sign up</button>
+                    <button class="rj-button rj-button--accent rj-button--small gtm_form_submit g-recaptcha" type="submit"
+                        data-form-id="Newsletter Form" data-sitekey="" data-callback="subscribeNewsletter" data-action="submit">Sign up</button>
                     <p class="rj-newsletter__message js-form-message" role="status" hidden></p>
-                </form>
+                </div>
             </div>
         </div>
 

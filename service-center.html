@@ -444,57 +444,62 @@
                 </div>
             </div>
 
-            <form class="rj-request__form js-form" action="javascript:void(0)"
-                data-success-message="Thanks — our service team will contact you to confirm your appointment."
-                novalidate>
+            <div class="rj-request__form gtm_form" id="service_form" data-form-id="Service Form">
                 <div class="row rj-row-gap-24">
                     <div class="col-12 col-md-6">
-                        <label class="rj-field__label" for="rj-service-first-name">First name <span
+                        <label class="rj-field__label" for="first_name">First name <span
                                 aria-hidden="true">*</span></label>
-                        <input class="rj-field__input" type="text" id="rj-service-first-name" name="first_name"
-                            placeholder="Enter first name" autocomplete="given-name" required>
+                        <input class="rj-field__input require_check" type="text" id="first_name" name="first_name"
+                            placeholder="Enter first name" autocomplete="given-name">
+                        <div class="field-error" id="error_first_name"></div>
                     </div>
                     <div class="col-12 col-md-6">
-                        <label class="rj-field__label" for="rj-service-last-name">Last name <span
+                        <label class="rj-field__label" for="last_name">Last name <span
                                 aria-hidden="true">*</span></label>
-                        <input class="rj-field__input" type="text" id="rj-service-last-name" name="last_name"
-                            placeholder="Enter last name" autocomplete="family-name" required>
+                        <input class="rj-field__input require_check" type="text" id="last_name" name="last_name"
+                            placeholder="Enter last name" autocomplete="family-name">
+                        <div class="field-error" id="error_last_name"></div>
                     </div>
                     <div class="col-12 col-md-6">
-                        <label class="rj-field__label" for="rj-service-email">Email <span
+                        <label class="rj-field__label" for="email">Email <span
                                 aria-hidden="true">*</span></label>
-                        <input class="rj-field__input" type="email" id="rj-service-email" name="email"
-                            placeholder="name@email.com" autocomplete="email" required>
+                        <input class="rj-field__input require_check" type="email" id="email" name="email"
+                            placeholder="name@email.com" autocomplete="email">
+                        <div class="field-error" id="error_email"></div>
                     </div>
                     <div class="col-12 col-md-6">
-                        <label class="rj-field__label" for="rj-service-phone">Phone <span
+                        <label class="rj-field__label" for="phone">Phone <span
                                 aria-hidden="true">*</span></label>
-                        <input class="rj-field__input" type="tel" id="rj-service-phone" name="phone"
-                            placeholder="(555) 123-4567" autocomplete="tel" required>
+                        <input class="rj-field__input phoneInput require_check" type="tel" id="phone" name="phone"
+                            placeholder="(555) 123-4567" autocomplete="tel">
+                        <div class="field-error" id="error_phone"></div>
                     </div>
                     <div class="col-12 col-md-6">
-                        <label class="rj-field__label" for="rj-service-vessel-year">Vessel year <span
+                        <label class="rj-field__label" for="year">Vessel year <span
                                 aria-hidden="true">*</span></label>
-                        <input class="rj-field__input" type="text" id="rj-service-vessel-year" name="vessel_year"
-                            placeholder="e.g. 2021" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" required>
+                        <input class="rj-field__input require_check" type="text" id="year" name="vessel_year"
+                            placeholder="e.g. 2021" inputmode="numeric" pattern="[0-9]{4}" maxlength="4">
+                        <div class="field-error" id="error_year"></div>
                     </div>
                     <div class="col-12 col-md-6">
-                        <label class="rj-field__label" for="rj-service-vessel-make">Vessel make <span
+                        <label class="rj-field__label" for="boat_make">Vessel make <span
                                 aria-hidden="true">*</span></label>
-                        <input class="rj-field__input" type="text" id="rj-service-vessel-make" name="vessel_make"
-                            placeholder="e.g. Yamaha, Mercury, Suzuki" required>
+                        <input class="rj-field__input require_check" type="text" id="boat_make" name="vessel_make"
+                            placeholder="e.g. Yamaha, Mercury, Suzuki">
+                        <div class="field-error" id="error_boat_make"></div>
                     </div>
                     <div class="col-12 col-md-6">
-                        <label class="rj-field__label" for="rj-service-vessel-model">Vessel model <span
+                        <label class="rj-field__label" for="boat_model">Vessel model <span
                                 aria-hidden="true">*</span></label>
-                        <input class="rj-field__input" type="text" id="rj-service-vessel-model" name="vessel_model"
-                            placeholder="e.g. F300, Verado 400" required>
+                        <input class="rj-field__input require_check" type="text" id="boat_model" name="vessel_model"
+                            placeholder="e.g. F300, Verado 400">
+                        <div class="field-error" id="error_boat_model"></div>
                     </div>
                     <div class="col-12 col-md-6">
-                        <label class="rj-field__label" for="rj-service-type">Service type <span
+                        <label class="rj-field__label" for="service_type">Service type <span
                                 aria-hidden="true">*</span></label>
-                        <select class="rj-field__input rj-field__input--select" id="rj-service-type"
-                            name="service_type" required>
+                        <select class="rj-field__input rj-field__input--select require_check" id="service_type"
+                            name="service_type">
                             <option value="" selected>Select service...</option>
                             <option value="engine-repair">Engine Repair &amp; Maintenance</option>
                             <option value="winterization">Winterization &amp; Storage</option>
@@ -504,13 +509,17 @@
                             <option value="electronics">Electronics Installation</option>
                             <option value="spring-commissioning">Spring Commissioning</option>
                         </select>
+                        <div class="field-error" id="error_service_type"></div>
                     </div>
                 </div>
 
-                <button class="rj-button rj-button--accent rj-button--small rj-request__submit" type="submit">Submit
+                <input type="text" name="honeypot" id="honeypot_service_form" class="honeypot" style="display: none;">
+                {{> partials/utm}}
+                <button id="service-form" class="rj-button rj-button--accent rj-button--small rj-request__submit gtm_form_submit g-recaptcha" type="submit"
+                    data-form-id="Service Form" data-sitekey="" data-callback="service_form" data-action="submit">Submit
                     service request</button>
                 <p class="rj-form-message js-form-message" role="status" hidden></p>
-            </form>
+            </div>
         </div>
     </section>
 
@@ -542,13 +551,15 @@
                         spam — we're too busy rigging boats.</p>
                 </div>
 
-                <form class="rj-newsletter__form js-form" data-success-message="Thanks — you're on the list." action="javascript:void(0)" novalidate>
-                    <label class="sr-only" for="rj-newsletter-email">Email address</label>
-                    <input class="rj-newsletter__input" type="email" id="rj-newsletter-email" name="email"
+                <div class="rj-newsletter__form gtm_form" id="subscribe-newsletter" data-form-id="Newsletter Form">
+                    <input type="text" name="honeypot" id="honeypot_subscribe_newsletter" class="honeypot" style="display: none;">
+                    <label class="sr-only" for="subscriber-email">Email address</label>
+                    <input class="rj-newsletter__input" type="email" id="subscriber-email" name="email"
                         placeholder="you@email.com" autocomplete="email" required>
-                    <button class="rj-button rj-button--primary rj-button--small" type="submit">Sign up</button>
+                    <button class="rj-button rj-button--accent rj-button--small gtm_form_submit g-recaptcha" type="submit"
+                        data-form-id="Newsletter Form" data-sitekey="" data-callback="subscribeNewsletter" data-action="submit">Sign up</button>
                     <p class="rj-newsletter__message js-form-message" role="status" hidden></p>
-                </form>
+                </div>
             </div>
         </div>
 

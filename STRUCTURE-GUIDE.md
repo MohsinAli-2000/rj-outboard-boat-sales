@@ -480,6 +480,18 @@ $(document).ready(function () {
 3. Header / nav / menu logic goes first and runs site-wide; carousels go last.
 4. Find elements by `data-` attributes or `js-` classes (§3.2 rule 7).
 
+### 9.1.1 Madis form pattern (current markup — supersedes the `.js-form` description below)
+
+Form markup follows Madis (`mean-madis/public/assets/js/forms.js`) so the pages can be pasted into a Madis clone and wired up without touching the markup. **Markup only — no form JS lives in this project.**
+
+- **Container, not `<form>`:** the form is a `<div>` carrying `gtm_form`, a unique `id` (`contact_form`, `schedule-demo`, `value_trade`, `part_form`, `service_form`, `repower_form`, `subscribe-newsletter`) and `data-form-id="<GTM name>"`. The id is what `forms.js` validates and clears.
+- **Fields:** every input/select/textarea has an `id` (snake_case; Madis ids where one exists: `full_name`, `email`, `phone`, `phoneNo`, `year`, `boat_make`, `boat_model`, `comments`, `best-phone`, `prefered_date`, `subscriber-email`), a matching `<label for>`, and the class `require_check` when mandatory (replaces the `required` attribute). Telephone fields add `phoneInput` (the intl-tel-input hook).
+- **Errors:** each field is followed by `<div class="field-error" id="error_<fieldId>"></div>`; the script adds `error_field` to the invalid field (styled in the common region, §14.4).
+- **Spam + tracking:** a `.honeypot` text input (`id="honeypot_<form_id>"`, the one allowed inline `display: none`) and the global `{{> partials/utm}}` partial sit just before the submit button — never write the seven `utm_*` inputs out by hand. The newsletter has the honeypot only.
+- **Submit button:** `gtm_form_submit g-recaptcha` + `id`, `data-form-id`, `data-sitekey=""`, `data-callback="<global fn name>"`, `data-action="submit"`. In the Madis clone fill `data-sitekey` with `{{config.googleCaptchaSiteKey}}`.
+- **`sr-only`:** a label that has no visible text uses `class="sr-only"` (the newsletter email). Visible labels are not made `sr-only`.
+- Keep the form's existing `rj-` classes — the pattern adds hooks, it never replaces styling classes.
+
 ### 9.1 Forms
 
 Every form that has no backend yet uses the one shared handler: give the `<form>` `class="js-form"` and `data-success-message="…"`, and add a `<p class="rj-form-message js-form-message" role="status" hidden></p>` inside it. It validates with the browser, shows the message and resets. Field styling is the shared `.rj-field__label` / `.rj-field__input` family in the common region (`--compact`, `--select`, `--date`, `--textarea`). A date field is `type="text"` + `js-date-input` so its placeholder shows. The two-column form pages (Schedule Demo, Contact) share `.rj-form-column` > `.rj-form-intro` + `.rj-form-card` (`--tinted` for the grey card; pair it with `.rj-field__input--on-tint`).

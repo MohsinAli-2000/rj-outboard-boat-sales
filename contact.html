@@ -282,38 +282,40 @@
                         will respond shortly.</p>
                 </div>
 
-                <form class="rj-form-card rj-form-card--tinted js-form" action="javascript:void(0)"
-                    data-success-message="Thanks — an RJ's expert will respond shortly." novalidate>
+                <div class="rj-form-card rj-form-card--tinted gtm_form" id="contact_form" data-form-id="Contact Us Form">
                     <div class="rj-form-card__fields">
                         <div class="rj-form-card__field rj-form-card__field--full">
-                            <label class="rj-field__label" for="rj-contact-name">Your name <span
+                            <label class="rj-field__label" for="full_name">Your name <span
                                     aria-hidden="true">*</span></label>
-                            <input class="rj-field__input rj-field__input--compact rj-field__input--on-tint"
-                                type="text" id="rj-contact-name" name="name" placeholder="e.g. John Doe"
-                                autocomplete="name" required>
+                            <input class="rj-field__input rj-field__input--compact rj-field__input--on-tint require_check"
+                                type="text" id="full_name" name="name" placeholder="e.g. John Doe"
+                                autocomplete="name">
+                            <div class="field-error" id="error_full_name"></div>
                         </div>
 
                         <div class="rj-form-card__field">
-                            <label class="rj-field__label" for="rj-contact-email">Email address <span
+                            <label class="rj-field__label" for="email">Email address <span
                                     aria-hidden="true">*</span></label>
-                            <input class="rj-field__input rj-field__input--compact rj-field__input--on-tint"
-                                type="email" id="rj-contact-email" name="email" placeholder="john@example.com"
-                                autocomplete="email" required>
+                            <input class="rj-field__input rj-field__input--compact rj-field__input--on-tint require_check"
+                                type="email" id="email" name="email" placeholder="john@example.com"
+                                autocomplete="email">
+                            <div class="field-error" id="error_email"></div>
                         </div>
 
                         <div class="rj-form-card__field">
-                            <label class="rj-field__label" for="rj-contact-phone">Phone number <span
+                            <label class="rj-field__label" for="phoneNo">Phone number <span
                                     aria-hidden="true">*</span></label>
-                            <input class="rj-field__input rj-field__input--compact rj-field__input--on-tint"
-                                type="tel" id="rj-contact-phone" name="phone" placeholder="(813) 555-0199"
-                                autocomplete="tel" required>
+                            <input class="rj-field__input rj-field__input--compact rj-field__input--on-tint phoneInput require_check"
+                                type="tel" id="phoneNo" name="phone" placeholder="(813) 555-0199"
+                                autocomplete="tel">
+                            <div class="field-error" id="error_phoneNo"></div>
                         </div>
 
                         <div class="rj-form-card__field rj-form-card__field--full">
-                            <label class="rj-field__label" for="rj-contact-subject">Subject</label>
+                            <label class="rj-field__label" for="subject">Subject</label>
                             <select
                                 class="rj-field__input rj-field__input--compact rj-field__input--on-tint rj-field__input--select rj-field__input--select-dark"
-                                id="rj-contact-subject" name="subject">
+                                id="subject" name="subject">
                                 <option value="sales" selected>Sales Inquiry</option>
                                 <option value="service">Service Inquiry</option>
                                 <option value="parts">Parts &amp; Accessories</option>
@@ -321,22 +323,25 @@
                                 <option value="sell-trade">Sell / Trade Your Boat</option>
                                 <option value="other">Something else</option>
                             </select>
+                            <div class="field-error" id="error_subject"></div>
                         </div>
 
                         <div class="rj-form-card__field rj-form-card__field--full">
-                            <label class="rj-field__label" for="rj-contact-message">Message <span
+                            <label class="rj-field__label" for="comments">Message <span
                                     aria-hidden="true">*</span></label>
                             <textarea
-                                class="rj-field__input rj-field__input--compact rj-field__input--on-tint rj-field__input--textarea"
-                                id="rj-contact-message" name="message" placeholder="How can we help you today?"
-                                required></textarea>
+                                class="rj-field__input rj-field__input--compact rj-field__input--on-tint rj-field__input--textarea require_check"
+                                id="comments" name="message" placeholder="How can we help you today?"></textarea>
+                            <div class="field-error" id="error_comments"></div>
                         </div>
                     </div>
 
-                    <button class="rj-button rj-button--accent rj-button--small rj-button--block rj-form-card__submit"
-                        type="submit">Send message</button>
+                    <input type="text" name="honeypot" id="honeypot_contact_form" class="honeypot" style="display: none;">
+                    {{> partials/utm}}
+                    <button id="contact-submit-form" class="rj-button rj-button--accent rj-button--small rj-button--block rj-form-card__submit gtm_form_submit g-recaptcha" type="submit"
+                        data-form-id="Contact Us Form" data-sitekey="" data-callback="contact_form" data-action="submit">Send message</button>
                     <p class="rj-form-message js-form-message" role="status" hidden></p>
-                </form>
+                </div>
             </div>
         </div>
     </section>
@@ -454,13 +459,15 @@
                         spam — we're too busy rigging boats.</p>
                 </div>
 
-                <form class="rj-newsletter__form js-form" data-success-message="Thanks — you're on the list." action="javascript:void(0)" novalidate>
-                    <label class="sr-only" for="rj-newsletter-email">Email address</label>
-                    <input class="rj-newsletter__input" type="email" id="rj-newsletter-email" name="email"
+                <div class="rj-newsletter__form gtm_form" id="subscribe-newsletter" data-form-id="Newsletter Form">
+                    <input type="text" name="honeypot" id="honeypot_subscribe_newsletter" class="honeypot" style="display: none;">
+                    <label class="sr-only" for="subscriber-email">Email address</label>
+                    <input class="rj-newsletter__input" type="email" id="subscriber-email" name="email"
                         placeholder="you@email.com" autocomplete="email" required>
-                    <button class="rj-button rj-button--accent rj-button--small" type="submit">Sign up</button>
+                    <button class="rj-button rj-button--accent rj-button--small gtm_form_submit g-recaptcha" type="submit"
+                        data-form-id="Newsletter Form" data-sitekey="" data-callback="subscribeNewsletter" data-action="submit">Sign up</button>
                     <p class="rj-newsletter__message js-form-message" role="status" hidden></p>
-                </form>
+                </div>
             </div>
         </div>
 
