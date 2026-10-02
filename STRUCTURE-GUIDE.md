@@ -40,7 +40,7 @@ Throughout this guide, examples use the RJ prefix `rj-` — **substitute the new
 
 ### A.4 Hard rules for AI tools working in this project
 
-- **Markup only for forms.** Never add `<script>` tags, inline handlers, `fetch`/AJAX, validation JS or Handlebars logic (`{{#if}}`, `{{config…}}`) to the static pages. The single permitted Handlebars token is `{{> partials/utm}}` inside a form (§15.3).
+- **Markup only for forms.** Never add `<script>` tags, inline handlers, `fetch`/AJAX, validation JS or Handlebars logic (`{{#if}}`, `{{config…}}`) to the static pages. The single permitted Handlebars token is `<!-- {{> partials/utm}} -->` — **always commented** — inside each page form (§15.2, §15.3).
 - **All CSS goes in `style.css`** (golden rule 6), in the right region, with `@media` in `RESPONSIVE` and colours as tokens. Never a second stylesheet, `<style>` tag or inline style (the honeypot's `display: none` is the one exception).
 - **Don't change look or layout when adding hooks.** New ids, classes and attributes are additive; never remove or rename an existing styling class to "fix" markup.
 - **Don't invent a pattern** when Madis already has one — read `forms.js` and the nearest `.hbs` first (§15.1), reuse its ids, and flag every place the new site's fields differ (§15.4).
@@ -767,7 +767,7 @@ Whenever you add CSS for a block that will repeat across sites:
 
 ## 15. Forms — the Madis markup pattern
 
-Every form (page forms, modals, the footer newsletter) is written to the contract below so the pasted markup works with Madis's `forms.js` unchanged. **Markup only: no JS, no `fetch`, no Handlebars except `{{> partials/utm}}`.**
+Every form (page forms, modals, the footer newsletter) is written to the contract below so the pasted markup works with Madis's `forms.js` unchanged. **Markup only: no JS, no `fetch`, no Handlebars except the commented `<!-- {{> partials/utm}} -->`.**
 
 ### 15.1 Read the source first
 
@@ -790,7 +790,7 @@ Before writing or changing a form, open the Madis equivalents (path in §A.3):
 | **Radios / checkboxes** | Read by `name` (e.g. `trade_in`) or id (`disclaimer`); no `require_check`. |
 | **Hidden extras** | Plain `<input type="hidden" id="…">` when a handler reads one (e.g. `event_url`). |
 | **Honeypot** | `<input type="text" name="honeypot" id="honeypot_<container_id_with_underscores>" class="honeypot" style="display: none;">` inside the container, one per form. (The one allowed inline style.) |
-| **UTM** | `{{> partials/utm}}` once per page form, placed after the fields and before the submit button. Never hand-write the `utm_*` inputs. The newsletter has none. |
+| **UTM** | Add `<!-- {{> partials/utm}} -->` once per page form — **always written as an HTML comment** — placed after the honeypot and before the submit button. The static page must never show the raw tag; whoever wires the form in the Madis clone removes the comment markers. Never hand-write the `utm_*` inputs. The newsletter has none. |
 | **Submit button** | `<button id="<button-id>" class="<existing classes> gtm_form_submit g-recaptcha" type="submit" data-form-id="<same GTM name>" data-sitekey="" data-callback="<global handler name>" data-action="submit">Label</button>` — the Madis views use `type="button"` or no type; any is fine inside a `<div>`. |
 | **`sr-only`** | A label with no visible text (placeholder-only field, newsletter email) gets `class="sr-only"`. Visible labels are never made `sr-only` — it would change the layout. |
 | **Labels & placeholders** | Keep the Figma design. `forms.js` builds "<Label> is required." from `label[for=id]` (the `*` is stripped), else from the placeholder. |
@@ -815,7 +815,7 @@ Page form:
     </div>
 
     <input type="text" name="honeypot" id="honeypot_contact_form" class="honeypot" style="display: none;">
-    {{> partials/utm}}
+    <!-- {{> partials/utm}} -->
     <button id="contact-submit-form" class="rj-button rj-button--accent gtm_form_submit g-recaptcha" type="submit"
         data-form-id="Contact Us Form" data-sitekey="" data-callback="contact_form" data-action="submit">Send message</button>
 </div>
@@ -883,13 +883,13 @@ Run this before telling the user the pages are ready to paste into a Madis clone
 - [ ] Container ids are unique per page and match §15.4 (or are flagged as new).
 - [ ] Every field has `id` + `label for`; mandatory ones have `require_check`; no `required` attribute left (the newsletter email keeps it, as in Madis).
 - [ ] Every field has its `error_<id>` container; phone fields have `phoneInput`.
-- [ ] Each form has one honeypot; each page form has `{{> partials/utm}}` (not hand-written inputs).
+- [ ] Each form has one honeypot; each page form has `<!-- {{> partials/utm}} -->` **kept commented** (not hand-written inputs, not uncommented).
 - [ ] Each submit button has `gtm_form_submit g-recaptcha`, `data-form-id`, `data-sitekey=""`, `data-callback`, `data-action="submit"`.
 - [ ] Placeholder-only fields have an `sr-only` label; visible labels are untouched.
 - [ ] No duplicate ids on any page; every `label for` points at an existing id.
 - [ ] Mismatches with Madis handlers are listed for the user (§15.5 rule 5).
 
 **Project**
-- [ ] No new JS, inline scripts or Handlebars other than `{{> partials/utm}}` were added.
+- [ ] No new JS, inline scripts or Handlebars were added; the only Handlebars token is the commented `<!-- {{> partials/utm}} -->`.
 - [ ] Look and layout are unchanged — only ids, classes, attributes and empty/hidden elements were added.
 - [ ] New CSS (if any) is in `style.css`, in the right region, using tokens (§14.5).
