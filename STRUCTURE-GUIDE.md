@@ -38,7 +38,7 @@ RJ outboard Sales/
     videos/
 ```
 
-- Reference files with relative paths: `./assets/css/style.css`, `./assets/js/script.js`, `./assets/images/home/hero-background.webp`.
+- Reference files with relative paths: `./assets/css/style.css`, `./assets/js/script.js`, `https://cdn.mdsbrand.com/mean-rj-outboard/assets/images/home/hero-background.webp`.
 - **One flat folder per page under `assets/images/`.** Never split a page's images into per-section sub-folders. Prefix the file name with its section instead, so nothing collides and the folder still sorts sensibly: `brand-logo-g3.png`, `brand-photo-g3.png`, `category-pontoons.jpg`, `blog-service-tips-spring-run.jpg`, `social-duck-hunters.jpg`. An image used on more than one page goes in `common/`.
 - Image and video file names are lowercase-kebab-case and describe the content: `hero-boat-on-lake.jpg`, not `IMG_0231.jpg` or `Frame 12.png`.
 - Export images from Figma at **2x** (and SVG for icons/logos) so they stay sharp on retina screens.
