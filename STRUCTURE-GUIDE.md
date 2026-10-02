@@ -11,13 +11,14 @@ This is a plain static site: HTML + Bootstrap 4 + jQuery. No build step, no fram
 
 ---
 
-## 0. The five golden rules
+## 0. The six golden rules
 
 1. **Pixel-perfect to Figma.** Every size, gap, colour, font, radius, shadow, opacity and image crop is read from the Figma node and matched exactly at the design width (1920). Never eyeball it. If a value can't be read from Figma, ask — don't guess.
 2. **Every screen size works.** The design is delivered at 1920, but the page must look intentional from **1920 down to 320**. Nothing overflows, nothing is clipped, nothing is unreadably small. See §7.
 3. **Class names a stranger can read.** Full words, no abbreviations, named for *what the thing is*, not how it looks. See §3.
 4. **Clean, clear code.** One job per class, no duplicated declarations, no dead code, comments that explain *why*. See §4.
 5. **Reuse before you write.** Use an existing class or pattern first. Add new CSS only when nothing fits.
+6. **All CSS lives in `style.css`.** Any CSS you add or paste — a shared block, a modal, an error state, a one-off — goes into `assets/css/style.css`, in the right region (§5), with its `@media` rules in `RESPONSIVE` and colours as `:root` tokens. Never a second stylesheet, a `<style>` tag or an inline `style=""`. If it is a reusable block, also record it in §14 so the guide stays the template for the next site.
 
 ---
 
@@ -226,8 +227,18 @@ The exact sizes behind each class come from the Figma text styles; the table is 
     --color-venice-blue: #0a4a94;
     --color-white: #ffffff;
 
+    /* neutral charcoal scheme for the shared common blocks (§14) */
+    --color-charcoal: #222222;
+    --color-ink: #1e1e1e;
+    --color-near-black: #1a1a1a;
+    --color-input-border: #dedfe0;
+    --color-error-red: #ff0000;
+    --white-20: rgba(255, 255, 255, 0.2);
+    --white-60: rgba(255, 255, 255, 0.6);
+
     --font-display: 'Sora', sans-serif;
     --font-body: 'Archivo', sans-serif;
+    --font-label: 'Inter', sans-serif;
 
     --topbar-height: 49px;
     --navbar-height: 102.97px;
@@ -261,6 +272,7 @@ Read top to bottom. Add rules to the **correct region**, never at the end by hab
 | 5 | Footer | `.rj-footer*` |
 | 6 | Home page | every Home-only section |
 | 7…N | one banner per additional page | that page's **base** classes only — **no `@media`** |
+| N+1 | `404 + shared common blocks` | the §14 template blocks (common section, share modal, special banner, error states) |
 | LAST | `RESPONSIVE` | **every** `@media` rule in the site (§7) |
 
 A page's base CSS goes in **one contiguous, labelled block**, with a `/* ---- section name ---- */` sub-comment per section, in the same order the sections appear on the page.
@@ -272,7 +284,8 @@ A page's base CSS goes in **one contiguous, labelled block**, with a `/* ---- se
 Take every value from Figma. These are the building blocks:
 
 - **Colours** — Figma's color styles (Firefly, Downriver, Big Stone, Milano Red, Signal Red, Venice Blue, Catskill White, Blue Bayoux …) as tokens. Recurring alphas (card borders, hairlines) are named tokens too, not repeated literals.
-- **Fonts** — Sora for headings, nav, buttons and prices; Archivo for body copy and eyebrows; Inter only for the "boat photo" placeholder label. Verify against Figma.
+- **Neutral scheme for the shared common blocks** — Charcoal `#222222` (headings, dark buttons, banner fill), Ink `#1e1e1e` (body paragraph), Near Black `#1a1a1a` (modal text, share icons, copy button), Input Border `#dedfe0`, Error Red `#ff0000` (invalid fields), plus white at 20% (hairline) and 60% (muted link). Tokens: `--color-charcoal`, `--color-ink`, `--color-near-black`, `--color-input-border`, `--color-error-red`, `--white-20`, `--white-60`. This is the starting scheme for a new site — swap the token values, not the rules.
+- **Fonts** — Sora (`--font-display`) for headings, nav, buttons and prices; Archivo (`--font-body`) for body copy and eyebrows; Inter (`--font-label`) only for the "boat photo" placeholder label and small tag labels. Verify against Figma.
 - **Type scale** — one shared class per Figma text style (§3.3). A section never sets its own font-size/line-height for a style that already has a class. A genuine one-off is written once, scoped to its block, with a comment saying why it's an exception.
 - **Buttons** — `.rj-button` is the base (height, font, tracking, uppercase, square corners) plus one fill modifier. Set widths per instance only when Figma fixes them; otherwise let the label and padding decide.
 - **Container** — `.rj-container` holds the page gutter. At 1920 it reproduces Figma's side gutters; below that it shrinks fluidly (§7.3). The header and hero use a narrower variant (`.rj-container--narrow`) only if Figma's gutters differ.
@@ -578,3 +591,60 @@ Build order for the page: **shared head → header + mega menus + mobile drawer 
 - [ ] `<title>` and `<meta description>` are set for the page.
 - [ ] No console errors, no 404s for CSS/JS/images (check the Network tab).
 - [ ] No leftover placeholder text, commented-out code or `console.log`.
+
+---
+
+## 14. Shared common blocks (template for the next site)
+
+These blocks recur on almost every page of the sites built from this guide. They already live in `style.css` (region `21. 404 + shared common blocks`, with their `@media` rules in `RESPONSIVE`). **Reuse them, copy them to the next site, change only the token values.**
+
+> **Naming exception.** These keep their original camelCase names (no `rj-` prefix) because the same HTML/JS is reused across sites and pages. They are the **only** non-`rj-` classes allowed. Everything new follows §3.
+
+### 14.1 Common section — text + image split (404, thank-you, simple content pages)
+
+```html
+<section class="commonSection">
+    <div class="commonSectionInnerWrap">
+        <div class="commonSectionTextWrapper">
+            <h1 class="commonSectionHeading">Page Not Found</h1>
+            <p class="commonPara">Short explanation.</p>
+            <div class="commonSectionLinkWrap">
+                <a class="featured-btn" href="./home.html">Back Home</a>
+            </div>
+        </div>
+        <div class="commonSectionImageWrapper"><img src="…" alt="…" width="…" height="…"></div>
+    </div>
+</section>
+```
+
+| Class | Role | Notes |
+|---|---|---|
+| `.commonSection` | section shell | 80px bottom margin |
+| `.commonSectionInnerWrap` | flex row, 120px gap | `max-width: calc(100% - 15%)`; ≤1200 full width with 40px gutters; ≤991 stacks **image first** (`column-reverse`) |
+| `.commonSectionTextWrapper` / `.commonSectionImageWrapper` | the two 50% halves | image fills with `object-fit: cover` |
+| `.commonSectionHeading` | 32px Sora, uppercase, 6.4px tracking, `--color-charcoal` | 29px / 3px tracking at ≤1440 |
+| `.commonPara` | 16/24 Archivo 300, centred, `--color-ink` | 40px top/bottom margin (30px at ≤1440) |
+| `.commonSectionLinkWrap` | centred button row, 20px gap | buttons stack (`column-reverse`) at ≤576 |
+| `.featured-btn` | dark uppercase button | `--color-charcoal` fill, white text |
+| `.thank-you-content-box` / `.thank-you-inner-box` | thank-you page text column (50%, max 480px, vertically centred) | |
+
+### 14.2 Share modal (`#contactModal_email`)
+
+`.shareModalHeading`; `.popup_input` + `.copyShareLinkBtn` inside `.copyLinkWrapper` (the copy-link row); `.shareIconsWrapper` > `.shareIconsContainer` > `.shareIcons` (50px round outline icons, Font Awesome `fa-brands` inside). The `#contactModal_email` rules strip the header border and cap the dialog at 450px. `.desktopShareBtn` shows above 991px and `.mobileShareBtn` (native share sheet) at ≤991 — exactly one is visible at any width.
+
+### 14.3 "Special" banner (featured boat strip)
+
+`.specialBanner` (charcoal band) > `.specialTag` (positioned wrapper) holding `.specialWhiteLine` (hairline) and `.specialTagText` (Inter, uppercase label centred over the line on a charcoal chip) · `.specialBoatTitle` (Sora 20/28 bold) · `.specailMoreDetailBtn` (muted "more details" link — **the spelling is intentional**, it matches the live HTML) with `.specialBtnArrow` (arrow that flips via `.rotate180Deg`) · `.specialShortDescpWrap` (hidden until toggled) > `.specialShortDescpText`.
+
+### 14.4 Form error states
+
+`.error_field` and `.req_check` give an invalid input or checkbox a 1px `--color-error-red` border; `input.error_field::placeholder` and `textarea.error_field::placeholder` turn the placeholder red. These carry `!important` on purpose — they must beat Bootstrap's `.form-control` border and focus styles. Script adds/removes the class; never style it by tag.
+
+### 14.5 The rule for adding more
+
+Whenever you add CSS for a block that will repeat across sites:
+
+1. Put the base rules in `style.css` — in its page region, or in the `21. 404 + shared common blocks` region if it is not page-specific — as **one** block per selector (§4.2).
+2. Colours come from `:root` tokens (§4.2). If a colour is new, add a token; don't paste a hex value.
+3. Every `@media` goes in the matching breakpoint in `RESPONSIVE` (§7.2) — never open a second block for a breakpoint that exists.
+4. Add the block to this section (markup + class table) so the next site starts from it.

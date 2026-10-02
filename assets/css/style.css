@@ -5,7 +5,7 @@
 
    BASE CSS FIRST, ALL RESPONSIVE LAST.
    1. tokens   2. common   3. header / nav   4. mobile menu
-   5. footer   6. home page   7. sell / trade page   8. schedule demo page   9. contact page   10. service center page   11. repower page   12. financing page   13. about page   14. meet team page   15. parts page   16. bennington page   17. testimonials page   18. faqs page   19. blog page   20. blog post page   LAST. RESPONSIVE
+   5. footer   6. home page   7. sell / trade page   8. schedule demo page   9. contact page   10. service center page   11. repower page   12. financing page   13. about page   14. meet team page   15. parts page   16. bennington page   17. testimonials page   18. faqs page   19. blog page   20. blog post page   21. 404 + shared common blocks   LAST. RESPONSIVE
 
    Every @media rule in the whole site lives in the RESPONSIVE block
    at the bottom — one block per breakpoint, never opened twice.
@@ -43,6 +43,13 @@
     --color-ebony-clay: #1a2b3c;
     --color-fiord-gray: #3e5266;
 
+    /* neutral charcoal scheme used by the shared common blocks (§14 of the guide) */
+    --color-charcoal: #222222;
+    --color-ink: #1e1e1e;
+    --color-near-black: #1a1a1a;
+    --color-input-border: #dedfe0;
+    --color-error-red: #ff0000;
+
     /* recurring white alphas on dark surfaces */
     --white-04: rgba(255, 255, 255, 0.04);
     --white-10: rgba(255, 255, 255, 0.1);
@@ -53,6 +60,7 @@
     --white-45: rgba(255, 255, 255, 0.45);
     --white-50: rgba(255, 255, 255, 0.5);
     --white-55: rgba(255, 255, 255, 0.55);
+    --white-60: rgba(255, 255, 255, 0.6);
     --white-65: rgba(255, 255, 255, 0.65);
     --white-70: rgba(255, 255, 255, 0.7);
     --white-75: rgba(255, 255, 255, 0.75);
@@ -158,22 +166,22 @@ input:focus-visible {
 }
 
 input.error_field::placeholder {
-    color: red !important;
+    color: var(--color-error-red) !important;
 }
 
 
 textarea.error_field::placeholder {
-    color: red !important;
+    color: var(--color-error-red) !important;
 }
 
 .error_field {
-    /* border-bottom: 1px solid red !important; */
-    border: 1px solid red !important;
+    /* border-bottom: 1px solid var(--color-error-red) !important; */
+    border: 1px solid var(--color-error-red) !important;
 }
 
 .req_check {
-    /* border-bottom: 1px solid red !important; */
-    border: 1px solid red !important;
+    /* border-bottom: 1px solid var(--color-error-red) !important; */
+    border: 1px solid var(--color-error-red) !important;
 }
 
 
@@ -5340,7 +5348,9 @@ a.rj-contact-list__item:hover {
 }
 
 
-/* 404 page start here */
+/* 21. 404 + shared common blocks start here */
+/* Layout, share modal and "special" banner carried over from the     */
+/* house template — see STRUCTURE-GUIDE.md §14.                        */
 
 .commonSection {
     margin-bottom: 80px;
@@ -5366,7 +5376,7 @@ a.rj-contact-list__item:hover {
     object-fit: cover;
 }
 .commonSectionHeading {
-    color: #222;
+    color: var(--color-charcoal);
     text-align: center;
     font-family: var(--font-display);
     font-size: 32px;
@@ -5377,7 +5387,7 @@ a.rj-contact-list__item:hover {
     text-transform: uppercase;
 }
 .commonPara {
-    color: #1E1E1E;
+    color: var(--color-ink);
     text-align: center;
     font-family: var(--font-body);
     font-size: 16px;
@@ -5395,7 +5405,7 @@ a.rj-contact-list__item:hover {
 }
 
 .featured-btn {
-    color: #FFF;
+    color: var(--color-white);
     text-align: center;
     font-family: var(--font-body);
     font-size: 16px;
@@ -5403,7 +5413,7 @@ a.rj-contact-list__item:hover {
     font-weight: 500;
     line-height: 20px;
     text-transform: uppercase;
-    background: #222;
+    background: var(--color-charcoal);
     display: inline-block;
 }
 .thank-you-content-box {
@@ -5430,8 +5440,8 @@ a.rj-contact-list__item:hover {
 .popup_input {
     width: calc(100% - 100px);
     height: 43px;
-    background: #fff none repeat scroll 0 0;
-    border: 1px solid #dedfe0;
+    background: var(--color-white);
+    border: 1px solid var(--color-input-border);
     margin-bottom: 0;
     padding: 0 10px 0 10px
 }
@@ -5440,18 +5450,18 @@ a.rj-contact-list__item:hover {
     font-size: 20px;
     line-height: 24px;
     text-transform: uppercase;
-    color: #1a1a1a;
+    color: var(--color-near-black);
     font-weight: 300;
 }
 
 .copyShareLinkBtn {
     text-align: center;
-    background: #1a1a1a;
+    background: var(--color-near-black);
     border: 1px solid transparent;
     display: inline-block;
     text-transform: uppercase;
     padding: 10px 30px;
-    color: #fff;
+    color: var(--color-white);
     font-size: 16px;
     letter-spacing: 0.8px;
     font-weight: 200;
@@ -5478,13 +5488,13 @@ a.rj-contact-list__item:hover {
 }
 
 .shareIconsContainer .fa-brands {
-    color: #1a1a1a;
+    color: var(--color-near-black);
 }
 
 .shareIcons {
-    border: 1px solid #000;
+    border: 1px solid var(--color-black);
     border-radius: 50%;
-    background-color: #fff;
+    background-color: var(--color-white);
     height: 50px;
     width: 50px;
     display: flex;
@@ -5504,7 +5514,7 @@ a.rj-contact-list__item:hover {
 
 /* special banner css starts */
 .specialBanner {
-    background-color: #222222;
+    background-color: var(--color-charcoal);
     padding: 22px 23px 8px 23px;
 }
 
@@ -5519,17 +5529,17 @@ a.rj-contact-list__item:hover {
     transform: translate(-50%, -50%);
     padding: 0 10%;
     z-index: 2;
-    background-color: #222;
+    background-color: var(--color-charcoal);
 }
 
 .specialWhiteLine {
     margin: 0;
-    background-color: #FFFFFF33;
+    background-color: var(--white-20);
     height: 1px;
 }
 
 .specialTagText {
-    color: #FFF;
+    color: var(--color-white);
     text-align: center;
     font-family: var(--font-label);
     font-size: 16px;
@@ -5541,7 +5551,7 @@ a.rj-contact-list__item:hover {
 }
 
 .specialBoatTitle {
-    color: #FFF;
+    color: var(--color-white);
     text-align: center;
     font-family: var(--font-display);
     font-size: 20px;
@@ -5551,7 +5561,7 @@ a.rj-contact-list__item:hover {
 }
 
 .specailMoreDetailBtn {
-    color: rgba(255, 255, 255, 0.60);
+    color: var(--white-60);
     text-align: center;
    font-family: var(--font-body);
     font-size: 16px;
@@ -5565,7 +5575,7 @@ a.rj-contact-list__item:hover {
 }
 
 .specailMoreDetailBtn:hover {
-    color: rgba(255, 255, 255, 0.60);
+    color: var(--white-60);
 }
 
 .specialShortDescpWrap{
@@ -5573,7 +5583,7 @@ a.rj-contact-list__item:hover {
 }
 
 .specialShortDescpText {
-    color: #FFF;
+    color: var(--color-white);
    font-family: var(--font-body);
     font-size: 16px;
     font-style: normal;
